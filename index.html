@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+
+	<link rel='icon' type='image/png' href='./assets/favicon.png'>
+	<link rel='stylesheet' href='./assets/primo.css'>
+	<link rel='stylesheet' href='./assets/build/bundle.css'>
+
+	<script>
+		const PromiseWorker = require('promise-worker');
+		function createWorker(dir) {
+			const worker = new Worker(dir);
+			return new PromiseWorker(worker);
+		}
+		const postcssWorker = createWorker('./worker.js')
+
+		// const processPostCSS = require('primo-functions').default.processPostCSS
+		// const postcssWorker = createWorker('workers/postcss.js')
+
+		const axios = require('axios')
+		async function processPostCSS(css, html, options, onsuccess) {
+			const response = await postcssWorker.postMessage({
+				css, html, options, onsuccess
+			})
+			return response
+		}
+		
+		async function buildSite(pages, site) {
+
+			const siteStyles = site.styles.raw
+
+			const desktop = require('os').homedir() + '/Desktop';
+			const buildDir = desktop + `/primo-build`
+
+			if (!fs.existsSync(buildDir)){
+					fs.mkdirSync(buildDir);
+			}
+
+			pages.forEach(page => {
+				fs.writeFile(`${buildDir}/${page.id}.html`, page.html, (err) => {
+					err && alert("An error ocurred creating the file "+ err.message)
+				});
+				fs.writeFile(`${buildDir}/${page.id}.css`, page.css, (err) => {
+					err && alert("An error ocurred creating the file "+ err.message)
+				});
+			})
+
+		}
+
+		const defaultData = {
+			"pages": [
+				{
+					"id": "index",
+					"title": "primo Page",
+					"content": [
+						{
+							"id": "0qodx",
+							"width": "contained",
+							"columns": [
+								{
+									"id": "00000",
+									"size": "w-full",
+									"rows": [
+										{
+											"id": "00000",
+											"type": "content",
+											"value": {
+												"html": "<p>new stuff</p>"
+											}
+										}
+									]
+								}
+							]
+						}
+					],
+					"dependencies": {
+						"headEmbed": "",
+						"libraries": []
+					},
+					"styles": {
+						"raw": "",
+						"final": "",
+						"tailwind": "{  theme: {    container: {      center: true    }  },  variants: {}}"
+					},
+					"wrapper": {
+						"raw": {
+							"head": "",
+							"above": "",
+							"below": ""
+						},
+						"final": {
+							"head": "",
+							"above": "",
+							"below": ""
+						}
+					},
+					"fields": [],
+					"settings": {
+						"javascript": "",
+						"identity": {
+							"title": "",
+							"url": "",
+							"description": ""
+						}
+					}
+				}
+			],
+			"fields": [],
+			"styles": {
+				"raw": "/* Default content styles */\n.primo-content {\n  @apply text-lg;\n  h1 {\n    @apply text-3xl font-medium;\n  }\n  h2 {\n    @apply text-2xl font-medium;\n  }\n  ul {\n    @apply list-disc list-inside;\n    p {\n        @apply inline;\n    }\n  } \n  ol {\n    @apply list-decimal list-inside;\n  } \n  a {\n    @apply text-blue-600 underline;\n  }\n  blockquote {\n      @apply shadow-md p-6;\n  }\n  mark {\n    @apply text-gray-900 bg-yellow-200;\n  }\n  \n  @screen lg {\n    h1 {\n      @apply text-5xl;\n    }\n    h2 {\n      @apply text-4xl;\n    }\n  }\n}",
+				"final": "",
+				"tailwind": "{\n  theme: {\n    container: {\n      center: true\n    }\n  },\n  variants: {}\n}"
+			},
+			"wrapper": {
+				"raw": {
+					"head": "",
+					"above": "",
+					"below": ""
+				},
+				"final": {
+					"head": "",
+					"above": "",
+					"below": ""
+				}
+			},
+			"symbols": []
+		}
+
+    const low = require('lowdb')
+    const FileSync = require('lowdb/adapters/FileSync')
+    const fs = require('fs')
+		const dataPath = nw.App.getDataPath()
+		const buildDir = dataPath + `/db.json`
+		const adapter = new FileSync(buildDir)
+		const db = low(adapter)
+
+		function parseDataFile(filePath) {
+			let siteData = db.get('site').value()
+			if (siteData) {
+				return siteData
+			} else {
+				fs.writeFile(filePath, JSON.stringify({ site: defaultData }), (err) => {
+					err && alert("An error ocurred creating the file "+ err.message)
+				});
+				return defaultData
+			}
+		}
+
+		let siteData = parseDataFile(buildDir)
+
+		async function updateDatabase(data) {
+			console.log('built to', buildDir)
+			db.set('site', data).write()
+			siteData = data
+		}
+
+
+	</script>
+
+	<script defer src='./assets/build/bundle.js'></script>
+</head>
+
+<style>
+	body {
+		/* min-height: 100vh; */
+		/* background-color: rgb(30,30,30); */
+	}
+	#primo-toolbar {
+		-webkit-app-region: drag;
+	}
+	.button-group, .button-container, .secondary-buttons, button {
+		-webkit-app-region: no-drag;
+	}
+	.primo-page {
+		margin-top: 80px !important;
+	}
+</style>
+
+<body>
+</body>
+</html>
