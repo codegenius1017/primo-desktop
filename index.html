@@ -14,41 +14,27 @@
 			const worker = new Worker(dir);
 			return new PromiseWorker(worker);
 		}
-		const postcssWorker = createWorker('./worker.js')
-
-		// const processPostCSS = require('primo-functions').default.processPostCSS
-		// const postcssWorker = createWorker('workers/postcss.js')
 
 		const axios = require('axios')
+		const postcssWorker = createWorker('workers/postcss.js')
+		const tailwindWorker = createWorker('workers/tailwind.js')
 		async function processPostCSS(css, html, options, onsuccess) {
-			const response = await postcssWorker.postMessage({
-				css, html, options, onsuccess
-			})
+			let response
+			const payload = { css, html, options, onsuccess }
+			if (options.includeTailwind) {
+				response = await tailwindWorker.postMessage(payload)
+			} else {
+				response = await postcssWorker.postMessage(payload)
+			}
 			return response
 		}
-		
+
+		const builderWorker = createWorker('workers/builder.js')
 		async function buildSite(pages, site) {
-
-			const siteStyles = site.styles.raw
-
-			const desktop = require('os').homedir() + '/Desktop';
-			const buildDir = desktop + `/primo-build`
-
-			if (!fs.existsSync(buildDir)){
-					fs.mkdirSync(buildDir);
-			}
-
-			pages.forEach(page => {
-				fs.writeFile(`${buildDir}/${page.id}.html`, page.html, (err) => {
-					err && alert("An error ocurred creating the file "+ err.message)
-				});
-				fs.writeFile(`${buildDir}/${page.id}.css`, page.css, (err) => {
-					err && alert("An error ocurred creating the file "+ err.message)
-				});
-			})
-
+			builderWorker.postMessage({ pages, site })
+			return 
 		}
-
+		
 		const defaultData = {
 			"pages": [
 				{
