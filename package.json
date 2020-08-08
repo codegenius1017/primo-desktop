@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "build": "/Applications/nwjs.app/Contents/MacOS/nwjs .",
+    "build": "/Applications/nwjs-sdk.app/Contents/MacOS/nwjs .",
     "package": "zip -r app.nw *",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
