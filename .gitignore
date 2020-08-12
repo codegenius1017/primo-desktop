@@ -1,3 +1,4 @@
-node_modules
-app.nw
+app/node_modules
+source/node_modules
+app/app.nw
 Icon?
