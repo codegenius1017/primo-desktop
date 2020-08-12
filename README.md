@@ -1,4 +1,6 @@
-![primo logo](logo.svg)
+<p align="center">
+  <img src="logo.svg" alt="primo logo"/>
+</p>
 
 ![demo](demo.gif)
 
