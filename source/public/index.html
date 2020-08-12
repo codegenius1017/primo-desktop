@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+
+	<link rel='icon' type='image/png' href='./favicon.png'>
+	<link rel='stylesheet' href='./primo.css'>
+	<link rel='stylesheet' href='./build/bundle.css'>
+	<script src="https://npmcdn.com/promise-worker/dist/promise-worker.js"></script>
+
+	<script>
+
+		// var worker = new Worker('worker.js');
+		// var promiseWorker = new PromiseWorker(worker);
+
+		// // const {processPostCSS} = require('electron').remote.require('../../primo-framework/packages/primo-functions/dist')
+		// const {processPostCSS:compileCSS} = require('electron').remote.require('primo-functions').default
+
+		// async function processPostCSS(css, html, options, onsuccess) {
+		// 	let response = ''
+		// 	if (options.includeTailwind) {
+		// 		response = await compileCSS(css, html, options)
+		// 	} else {
+		// 		response = await promiseWorker.postMessage({
+		// 			css, html, options, onsuccess
+		// 		})
+		// 	}
+		// 	return response
+		// }
+	
+		// const electronApp = require('electron').remote.app
+		// const fs = require('electron').remote.require('fs')
+
+		// const mainWindow = require('electron').remote.getCurrentWindow()
+		// const { download } = require('electron').remote.require('electron-dl')
+
+		// let siteData = require('electron').remote.getGlobal('siteData')
+
+		// const {ipcRenderer} = require('electron')
+
+		// ipcRenderer.on('asynchronous-reply', (event, arg) => {
+		// 	siteData = arg
+		// })
+		// ipcRenderer.send('getStoreValue')
+
+		// function buildSite(pages, site) {
+		// 	ipcRenderer.send('build-site', { pages, site })
+		// }
+
+		// function updateDatabase(data) {
+		// 	ipcRenderer.send('setStoreValue', data)
+		// }
+
+		async function processPostCSS() {
+			return ''
+		}
+
+		let siteData = {}
+
+	</script>
+
+	<script defer src='./build/bundle.js'></script>
+</head>
+
+<style>
+	#primo-toolbar {
+		border-top: 1.4rem solid #111;
+	}
+	.primo-page {
+		margin-top: 80px !important;
+	}
+</style>
+
+<body>
+</body>
+</html>

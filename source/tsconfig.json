@@ -1,0 +1,6 @@
+{
+  "rootDir": "src",
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": ["src/**/*","../primo-framework/packages/primo-app/src/types"],
+  "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
+}

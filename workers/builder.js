@@ -12,11 +12,14 @@ registerPromiseWorker(async function ({pages, site}) {
   }
 
   pages.forEach(page => {
-    fs.writeFile(`${buildDir}/${page.id}.html`, page.html, (err) => {
-      err && alert("An error ocurred creating the file "+ err.message)
-    });
-    fs.writeFile(`${buildDir}/${page.id}.css`, page.css, (err) => {
-      err && alert("An error ocurred creating the file "+ err.message)
-    });
+    createFile(page, 'html')
+    createFile(page, 'css')
+    createFile(page, 'json', JSON.stringify(page))
   })
+
+  function createFile(page, fileType, value = null) {
+    fs.writeFile(`${buildDir}/${page.id}.${fileType}`, value || page[fileType], (err) => {
+      err && alert("An error ocurred creating the file "+ err.message)
+    });
+  }
 });
