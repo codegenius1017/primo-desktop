@@ -6,6 +6,7 @@ The desktop app uses NWJS, so it gets built by zipping up all the files in the s
 
 * remove extreneous modules
 * create a watch script
+* write basic docs for the extensions API
 * Windows/Linux versions
 
 *help appreciated
