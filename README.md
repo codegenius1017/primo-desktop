@@ -1,6 +1,4 @@
-![logo](logo.svg)
-
-# primo for Desktop
+![primo logo](logo.svg)
 
 ![demo](demo.gif)
 
