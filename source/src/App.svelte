@@ -1,10 +1,10 @@
 <script>
 	import {setContext, onMount} from 'svelte'
 	import axios from 'axios/dist/axios'
-	import Primo, {modal, pageId} from '../../../primo-framework/primo-app/dist/build/main'
+	import Primo, {modal, pageId} from 'primo-app'
   import {buildPageHTML,buildPageStyles} from './utils'
 
-	import Build from '../../../primo-framework/plugins/builder'
+	import Build from 'primo-builder'
 
 	function saveData(data) {
 		updateDatabase(data)
