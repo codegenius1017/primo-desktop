@@ -1,4 +1,8 @@
-# Primo for Desktop (using NW.js)
+![logo](logo.svg)
+
+# primo for Desktop
+
+![demo](demo.gif)
 
 The desktop app uses NWJS, so it gets built by zipping up all the files in the source directory and placing that file in what is basically an app skeleton. There are two directories because we don't want to include the actual source of the Svelte component (which gets used inside the desktop app).
 

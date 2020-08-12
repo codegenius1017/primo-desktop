@@ -1,4 +1,6 @@
 app/node_modules
 source/node_modules
+app/assets/build
+app/assets/preview
 app/app.nw
 Icon?
