@@ -17,9 +17,9 @@
 
 		const postcssWorker = createWorker('workers/postcss.js')
 		const tailwindWorker = createWorker('workers/tailwind.js')
-		async function processPostCSS(css, html, options, onsuccess) {
+		async function processPostCSS(payload) {
 			let response
-			const payload = { css, html, options, onsuccess }
+			const { css, html, options, onsuccess } = payload
 			if (options.includeTailwind) {
 				response = await tailwindWorker.postMessage(payload)
 			} else {

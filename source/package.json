@@ -1,7 +1,7 @@
 {
   "name": "primo",
   "version": "1.0.0",
-  "main": "./src/electron.js",
+  "main": "./src/main.ts",
   "scripts": {
     "package": "npx electron-packager . --overwrite --icon='./primo.icns'",
     "build": "rollup -c",
@@ -54,7 +54,7 @@
     "polka": "^0.5.2",
     "postcss": "^7.0.32",
     "postcss-nested": "^4.2.3",
-    "primo-app": "^1.0.22",
+    "primo-app": "^1.0.47",
     "primo-functions": "^1.0.13",
     "serve-static": "^1.14.1",
     "sirv-cli": "^1.0.0",

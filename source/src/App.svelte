@@ -4,7 +4,7 @@
 	import Primo, {modal, pageId} from 'primo-app'
   import {buildPageHTML,buildPageStyles} from './utils'
 
-	import Build from 'primo-builder'
+	import Build from './extensions/Build.svelte';
 
 	function saveData(data) {
 		updateDatabase(data)
@@ -49,9 +49,13 @@
 
 	// NOTE: An error is being thrown at runtime related to the custom elements inside primo. It only seems to occur when pulling the package from npm. 
 
+	const processPostCSS = window.processPostCSS
 </script>
 
 <Primo 
+	functions={{
+		processPostCSS
+	}}
 	endpoint="http://localhost:3005/__functions"
 	{data}
 	on:save={({detail:data}) => {
