@@ -158,3 +158,17 @@
 <body>
 </body>
 </html>
+
+<script>
+  const path = './';
+  const fs = require('fs');
+  
+  const reloadWatcher = fs.watch(path, { recursive: true }, function() {
+    location.reload();
+    reloadWatcher.close();
+  });
+
+	for(var i in require.cache) {
+		delete require.cache[i];
+	}
+</script>
