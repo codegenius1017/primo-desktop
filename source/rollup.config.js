@@ -106,7 +106,7 @@ export default [{
 			// we'll extract any component CSS out into
 			// a separate file - better for performance
 			css: css => {
-				css.write(buildDirectory+'build/bundle.css');
+				css.write(buildDirectory+'preview/bundle.css');
 			},
 			preprocess,
 		}),
@@ -121,17 +121,6 @@ export default [{
 		}),
 		commonjs(),
 		typescript({ sourceMap: !production }),
-
-		// In dev mode, call `npm run start` once
-		// the bundle has been generated
-		!production && serve(),
-
-		// Watch the `public` directory and refresh the
-		// browser on changes when not in production
-		!production && livereload(buildDirectory),
-
-		// If we're building for production (npm run build
-		// instead of npm run dev), minify
 		production && terser()
 	],
 	watch: {
