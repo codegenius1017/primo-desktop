@@ -75,10 +75,6 @@ export default [{
 		commonjs(),
 		typescript({ sourceMap: !production }),
 
-		// In dev mode, call `npm run start` once
-		// the bundle has been generated
-		!production && serve(),
-
 		// Watch the `public` directory and refresh the
 		// browser on changes when not in production
 		!production && livereload(buildDirectory),
