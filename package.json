@@ -2,9 +2,10 @@
   "scripts": {
     "install": "concurrently \"cd source && npm run install\" \"cd app && npm run install\"",
     "dev": "concurrently --kill-others \"cd source && npm run dev\" \"cd app && npm run dev\"",
-    "build": "concurrently --kill-others \"cd source && npm run build\" \"cd app && npm run build\""
+    "build": "cd source && npm run build && cd ../app && npm run build"
   },
   "dependencies": {
-    "concurrently": "^5.3.0"
+    "concurrently": "^5.3.0",
+    "svelte-routing": "^1.4.2"
   }
 }

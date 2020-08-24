@@ -7,7 +7,7 @@
 	import Build from './extensions/Build.svelte';
 
 	function saveData(data) {
-		updateDatabase(data)
+		window.updateDatabase(data)
 	}
 
 	let data = siteData
@@ -53,10 +53,10 @@
 </script>
 
 <Primo 
+	dashboard="/dashboard.html"
 	functions={{
 		processPostCSS
 	}}
-	endpoint="http://localhost:3005/__functions"
 	{data}
 	on:save={({detail:data}) => {
 		localData = data

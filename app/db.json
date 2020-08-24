@@ -1,5 +1,6 @@
 {
   "site": {
+    "id": "test",
     "pages": [
       {
         "id": "index",
@@ -46,15 +47,7 @@
             "below": ""
           }
         },
-        "fields": [],
-        "settings": {
-          "javascript": "",
-          "identity": {
-            "title": "",
-            "url": "",
-            "description": ""
-          }
-        }
+        "fields": []
       }
     ],
     "fields": [],
@@ -64,15 +57,17 @@
       "tailwind": "{\n  theme: {\n    container: {\n      center: true\n    }\n  },\n  variants: {}\n}"
     },
     "wrapper": {
-      "raw": {
-        "head": "",
-        "above": "",
-        "below": ""
+      "head": {
+        "raw": "",
+        "final": ""
+      }, 
+      "above": {
+        "raw": "",
+        "final": ""
       },
-      "final": {
-        "head": "",
-        "above": "",
-        "below": ""
+      "below": {
+        "raw": "",
+        "final": ""
       }
     },
     "symbols": []

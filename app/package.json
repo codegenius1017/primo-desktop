@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "dev": "/Applications/nwjs-sdk.app/Contents/MacOS/nwjs .",
-    "build": "zip -r app.nw *",
+    "build": "zip -r ../app.nw *",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "window": {

@@ -161,7 +161,6 @@
 
 <script>
   const path = './';
-  const fs = require('fs');
   
   const reloadWatcher = fs.watch(path, { recursive: true }, function() {
     location.reload();
