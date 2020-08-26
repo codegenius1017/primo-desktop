@@ -53,7 +53,6 @@
 </script>
 
 <Primo 
-	dashboard="/dashboard.html"
 	functions={{
 		processPostCSS
 	}}
