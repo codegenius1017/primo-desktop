@@ -11,17 +11,16 @@ The desktop app uses NWJS, so it gets built by zipping up all the files in the s
 ## TODO*
 
 * remove extreneous modules
-* create a watch script
 * write basic docs for the extensions API
 * Windows/Linux versions
 
 *help appreciated
 
-## App Scripts (/app)
+## App Scripts
 
 * `npm run dev` build for dev and watch for changes
 * `npm run build` build for production
 
 ### To package binary
 
-Place `app.nw` in `Applications/primo.app/Contents/Resources` (i.e. overwrite existing file)
+Place `app.nw` in `primo.app/Contents/Resources` (i.e. overwrite existing file)
