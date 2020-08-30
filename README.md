@@ -6,7 +6,7 @@
 
 # primo is a visual, integrated, delightful code editor and content management system
 
-The desktop app uses NWJS, so it gets built by zipping up all the files in the source directory and placing that file in what is basically an app skeleton. There are two directories because we don't want to include the actual source of the Svelte component (which gets used inside the desktop app).
+The desktop app uses NWJS, so it gets built by zipping up all the files in the source directory and placing that file in what is basically an app skeleton. There are two directories because we don't want to include the actual source of the Svelte component (which gets used inside the desktop app). To tinker with the core primo app, you should fork [primo](https://github.com/primo-app/primo).
 
 ## TODO*
 
