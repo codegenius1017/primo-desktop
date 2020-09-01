@@ -1,16 +1,12 @@
 {
-  "name": "primo",
+  "name": "primo-desktop",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
+  "main": "main.js",
   "scripts": {
     "dev": "/Applications/nwjs-sdk.app/Contents/MacOS/nwjs .",
     "build": "zip -r ../app.nw *",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "window": {
-    "frame": false,
-    "toolbar": false
   },
   "chromium-args": "--enable-node-worker",
   "devDependencies": {

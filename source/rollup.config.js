@@ -44,10 +44,12 @@ function serve() {
 export default [{
 	input: 'src/main.ts',
 	output: {
-		sourcemap: true,
+		sourcemap: false,
 		format: 'iife',
 		name: 'app',
-		file: buildDirectory+'build/bundle.js'
+		file: buildDirectory+'build/bundle.js',
+    // format: 'es',
+    // dir: buildDirectory + 'build'
 	},
 	plugins: [
     svelte({ preprocess, customElement: true, include: /\.wc\.svelte$/ }),
@@ -90,10 +92,12 @@ export default [{
 {
 	input: 'src/preview.ts',
 	output: {
-		sourcemap: true,
+		sourcemap: false,
 		format: 'iife',
 		name: 'preview',
-		file: buildDirectory+'preview/bundle.js'
+		file: buildDirectory+'preview/bundle.js',
+    // format: 'es',
+    // dir: buildDirectory + 'preview'
 	},
 	plugins: [
 		svelte({

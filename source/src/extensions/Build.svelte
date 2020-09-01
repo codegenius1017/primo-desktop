@@ -27,5 +27,5 @@
     <button class="bg-gray-900 transition-colors duration-200 text-white flex-1 py-2 rounded-sm font-semibold hover:bg-gray-800" on:click={buildSelection}>Build site</button>
   </div>
 {:else}
-  <span class="w-full text-center block">Building site</span>
+  <span class="w-full text-center block">Building site to Desktop/primo-build</span>
 {/if}

@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 const boilerplate = (page, html) => {
   const {libraries} = page.dependencies
-  const headEmbed = page.wrapper.final.head
+  const headEmbed = page.wrapper.head.final
   return `
     <!doctype html>
 
@@ -93,7 +93,7 @@ export async function buildPageCSS(content, HTML, rawCSS, tailwindConfig) {
 
 export async function processStyles(css, html, options = {}) {
   try {
-    const result = await processPostCSS(css, html, options)
+    const result = await processPostCSS({css, html, options})
     if (result.error) {
       console.error(result.error)
       return '';

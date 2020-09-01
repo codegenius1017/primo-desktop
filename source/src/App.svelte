@@ -1,30 +1,31 @@
 <script>
-	import {setContext, onMount} from 'svelte'
+	import {beforeUpdate, setContext, onMount} from 'svelte'
 	import axios from 'axios/dist/axios'
 	import Primo, {modal, pageId} from 'primo-app'
   import {buildPageHTML,buildPageStyles} from './utils'
-
 	import Build from './extensions/Build.svelte';
+
+	// all the node stuff in happening in index.html
 
 	function saveData(data) {
 		window.updateDatabase(data)
 	}
 
-	let data = siteData
-	let localData = siteData
+	let sites = siteData || []
+	let activeSite = siteData[0]
 
 	modal.create([
 		{
 			id: 'BUILD',
 			component: Build,
 			componentProps: {
-				site: localData,
+				site: activeSite,
 				onbuild: async () => {
 
 					const pages = await Promise.all(
-						localData.pages.map(async page => {
+						activeSite.pages.map(async page => {
 							const html = buildPageHTML(page, true)
-							const css = await buildPageStyles(page, localData, html)
+							const css = await buildPageStyles(page, activeSite, html)
 							return { 
 								id: page.id, 
 								html, 
@@ -33,7 +34,7 @@
 						})
 					)
 
-					buildSite(pages, siteData)
+					buildSite(pages, activeSite)
 					modal.hide()
 				}
 			},
@@ -47,21 +48,32 @@
 		}
 	])
 
-	// NOTE: An error is being thrown at runtime related to the custom elements inside primo. It only seems to occur when pulling the package from npm. 
+	let data = sites[0]
 
-	const processPostCSS = window.processPostCSS
+	onMount(() => {
+		const splashPage = document.querySelector('#splash-page')
+		splashPage.classList.add('fadeout')
+		setTimeout(() => {splashPage.remove();}, 1000)
+	})
+
 </script>
 
 <Primo 
+	{data}
+	{sites}
+	role="developer"
+	showDashboardLink={false}
 	functions={{
 		processPostCSS
 	}}
-	{data}
 	on:save={({detail:data}) => {
-		localData = data
+		activeSite = data
 		saveData(data)
 	}} 
 	on:change={({detail:content}) => {
-		console.log(content)
+		// console.log(content)
 	}} 
+	on:signOut={async () => {
+
+	}}
 />

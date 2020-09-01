@@ -7,144 +7,184 @@
 	<link rel='icon' type='image/png' href='./assets/favicon.png'>
 	<link rel='stylesheet' href='./assets/primo.css'>
 	<link rel='stylesheet' href='./assets/build/bundle.css'>
+	<link rel='stylesheet' href='./assets/build/bundle.css.map'>
 
-	<script>
-		const PromiseWorker = require('promise-worker');
-		function createWorker(dir) {
-			const worker = new Worker(dir);
-			return new PromiseWorker(worker);
-		}
-
-		const postcssWorker = createWorker('workers/postcss.js')
-		const tailwindWorker = createWorker('workers/tailwind.js')
-		async function processPostCSS(payload) {
-			let response
-			const { css, html, options, onsuccess } = payload
-			if (options.includeTailwind) {
-				response = await tailwindWorker.postMessage(payload)
-			} else {
-				response = await postcssWorker.postMessage(payload)
-			}
-			return response
-		}
-
-		const builderWorker = createWorker('workers/builder.js')
-		async function buildSite(pages, site) {
-			builderWorker.postMessage({ pages, site })
-			return 
-		}
-		
-		const defaultData = {
-			"pages": [
-				{
-					"id": "index",
-					"title": "primo Page",
-					"content": [
-						{
-							"id": "0qodx",
-							"width": "contained",
-							"columns": [
-								{
-									"id": "00000",
-									"size": "w-full",
-									"rows": [
-										{
-											"id": "00000",
-											"type": "content",
-											"value": {
-												"html": "<p>new stuff</p>"
-											}
-										}
-									]
-								}
-							]
-						}
-					],
-					"dependencies": {
-						"headEmbed": "",
-						"libraries": []
-					},
-					"styles": {
-						"raw": "",
-						"final": "",
-						"tailwind": "{  theme: {    container: {      center: true    }  },  variants: {}}"
-					},
-					"wrapper": {
-						"raw": {
-							"head": "",
-							"above": "",
-							"below": ""
-						},
-						"final": {
-							"head": "",
-							"above": "",
-							"below": ""
-						}
-					},
-					"fields": [],
-					"settings": {
-						"javascript": "",
-						"identity": {
-							"title": "",
-							"url": "",
-							"description": ""
-						}
-					}
-				}
-			],
-			"fields": [],
-			"styles": {
-				"raw": "/* Default content styles */\n.primo-content {\n  @apply text-lg;\n  h1 {\n    @apply text-3xl font-medium;\n  }\n  h2 {\n    @apply text-2xl font-medium;\n  }\n  ul {\n    @apply list-disc list-inside;\n    p {\n        @apply inline;\n    }\n  } \n  ol {\n    @apply list-decimal list-inside;\n  } \n  a {\n    @apply text-blue-600 underline;\n  }\n  blockquote {\n      @apply shadow-md p-6;\n  }\n  mark {\n    @apply text-gray-900 bg-yellow-200;\n  }\n  \n  @screen lg {\n    h1 {\n      @apply text-5xl;\n    }\n    h2 {\n      @apply text-4xl;\n    }\n  }\n}",
-				"final": "",
-				"tailwind": "{\n  theme: {\n    container: {\n      center: true\n    }\n  },\n  variants: {}\n}"
-			},
-			"wrapper": {
-				"head": {
-					"raw": "",
-					"final": ""
-				},
-				"below": {
-					"raw": "",
-					"final": ""
-				}
-			},
-			"symbols": []
-		}
-
-    const low = require('lowdb')
-    const FileSync = require('lowdb/adapters/FileSync')
-    const fs = require('fs')
-		const dataPath = nw.App.getDataPath()
-		const buildDir = dataPath + `/db.json`
-		const adapter = new FileSync(buildDir)
-		const db = low(adapter)
-
-		function parseDataFile(filePath) {
-			let siteData = db.get('site').value()
-			if (siteData) {
-				return siteData
-			} else {
-				fs.writeFile(filePath, JSON.stringify({ site: defaultData }), (err) => {
-					err && alert("An error ocurred creating the file "+ err.message)
-				});
-				return defaultData
-			}
-		}
-
-		let siteData = parseDataFile(buildDir)
-
-		async function updateDatabase(data) {
-			db.set('site', data).write()
-			siteData = data
-		}
-
-
-	</script>
-
-	<script defer src='./assets/build/bundle.js'></script>
 </head>
 
+<script>
+
+	const PromiseWorker = nw.require('promise-worker');
+	function createWorker(dir) {
+		const worker = new Worker(dir);
+		return new PromiseWorker(worker);
+	}
+
+	const postcssWorker = createWorker('workers/postcss.js')
+	const tailwindWorker = createWorker('workers/tailwind.js')
+	async function processPostCSS(payload) {
+		let response
+		const { css, html, options, onsuccess } = payload
+		if (options.includeTailwind) {
+			response = await tailwindWorker.postMessage(payload)
+		} else {
+			response = await postcssWorker.postMessage(payload)
+		}
+		return response
+	}
+
+	const builderWorker = createWorker('workers/builder.js')
+	async function buildSite(pages, site) {
+		builderWorker.postMessage({ pages, site })
+		return 
+	}
+	
+	const defaultData = {
+		"pages": [
+			{
+				"id": "index",
+				"title": "Home Page",
+				"content": [
+					{
+						"id": "0qodx",
+						"width": "contained",
+						"columns": [
+							{
+								"id": "00000",
+								"size": "w-full",
+								"rows": [
+									{
+										"id": "00000",
+										"type": "content",
+										"value": {
+											"html": "<p><br></p>"
+										}
+									}
+								]
+							}
+						]
+					}
+				],
+				"dependencies": {
+					"headEmbed": "",
+					"libraries": []
+				},
+				"styles": {
+					"raw": "",
+					"final": "",
+					"tailwind": "{  \ntheme: {\n    container: {\n      center: true\n    }\n  },\n  variants: {}\n}"
+				},
+				"wrapper": {
+					"head" : {
+						"raw": "",
+						"final": ""
+					},
+					"below": {
+						"raw": "",
+						"final" : ""
+					}
+				},
+				"fields": [],
+				"settings": {
+					"javascript": "",
+					"identity": {
+						"title": "",
+						"url": "",
+						"description": ""
+					}
+				}
+			}
+		],
+		"fields": [],
+		"styles": {
+			"raw": "/* Default content styles */\n.primo-content {\n  @apply text-lg;\n  h1 {\n    @apply text-3xl font-medium;\n  }\n  h2 {\n    @apply text-2xl font-medium;\n  }\n  ul {\n    @apply list-disc list-inside;\n    p {\n        @apply inline;\n    }\n  } \n  ol {\n    @apply list-decimal list-inside;\n  } \n  a {\n    @apply text-blue-600 underline;\n  }\n  blockquote {\n      @apply shadow-md p-6;\n  }\n  mark {\n    @apply text-gray-900 bg-yellow-200;\n  }\n  \n  @screen lg {\n    h1 {\n      @apply text-5xl;\n    }\n    h2 {\n      @apply text-4xl;\n    }\n  }\n}",
+			"final": "",
+			"tailwind": "{\n  theme: {\n    container: {\n      center: true\n    }\n  },\n  variants: {}\n}"
+		},
+		"wrapper": {
+			"head": {
+				"raw": "",
+				"final": ""
+			},
+			"below": {
+				"raw": "",
+				"final": ""
+			}
+		},
+		"symbols": []
+	}
+
+	const low = nw.require('lowdb')
+	const FileSync = nw.require('lowdb/adapters/FileSync')
+	const fs = nw.require('fs')
+	const dataPath = nw.App.getDataPath()
+	const buildDir = dataPath + `/db-v01.json`
+	const adapter = new FileSync(buildDir)
+	const db = low(adapter)
+	db.defaults({ sites: [defaultData] })
+  .write()
+
+	function parseDataFile(filePath) {
+		let existingData = db.get('sites').value()
+		if (existingData) {
+			console.log('returning existing value', existingData)
+			return existingData
+		} else {
+			fs.writeFile(filePath, JSON.stringify(defaultData), (err) => {
+				err && alert("An error ocurred creating the file "+ err.message)
+			});
+			return defaultData
+		}
+	}
+
+	let siteData = parseDataFile(buildDir)
+
+	async function updateDatabase(data) {
+		console.log('saving', data)
+		db.set('sites', [data]).write()
+		// siteData = data
+	}
+
+
+</script> 
+
+	<body>
+		<div id="splash-page">
+			<div class="logo">
+				<img src="./assets/logo.svg" alt="">
+			</div>
+		</div>
+	</body>
+</html>
+
+
 <style>
+	#splash-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999999;
+    background: white;
+		opacity: 1;
+		display: flex;
+		justify-content: center;
+	}
+	#splash-page.fadeout {
+		transition: opacity 0.5s;
+		opacity: 0;
+		pointer-events: none;
+	}
+	#splash-page > div {
+		display:flex;
+	}
+	#splash-page.logo {
+		width: full;
+		height: screen;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 	#primo-toolbar {
 		-webkit-app-region: drag;
 	}
@@ -153,12 +193,11 @@
 	}
 </style>
 
-<body>
-</body>
-</html>
+<!-- <script type="module" src='./assets/build/main.js'></script> -->
+<script src='./assets/build/bundle.js'></script>
 
 <script>
-  const path = './';
+  const path = './assets';
   
   const reloadWatcher = fs.watch(path, { recursive: true }, function() {
     location.reload();
