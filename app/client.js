@@ -123,8 +123,6 @@ function parseDataFile(filePath) {
 
 const siteData = parseDataFile(buildDir)
 
-console.log({siteData})
-
 window.siteData = siteData
 
 async function updateDatabase(updatedSites) {

@@ -72,10 +72,4 @@
 	on:save={({detail:sites}) => {
 		saveData(sites)
 	}} 
-	on:change={({detail:content}) => {
-		// console.log(content)
-	}} 
-	on:signOut={async () => {
-
-	}}
 />
