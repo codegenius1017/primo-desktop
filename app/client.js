@@ -112,20 +112,22 @@ db.defaults({ sites: [defaultData] })
 function parseDataFile(filePath) {
   let existingData = db.get('sites').value()
   if (existingData) {
-    console.log('returning existing value', existingData)
     return existingData
   } else {
     fs.writeFile(filePath, JSON.stringify(defaultData), (err) => {
       err && alert("An error ocurred creating the file "+ err.message)
     });
-    return defaultData
+    return [defaultData]
   }
 }
 
-let siteData = parseDataFile(buildDir)
+const siteData = parseDataFile(buildDir)
 
-async function updateDatabase(data) {
-  const newSites = siteData.map(s => s.id === data.id ? data : s)
-  db.set('sites', newSites).write()
+console.log({siteData})
+
+window.siteData = siteData
+
+async function updateDatabase(updatedSites) {
+  db.set('sites', updatedSites).write()
 }
 

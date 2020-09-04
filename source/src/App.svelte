@@ -5,13 +5,16 @@
   import {buildPageHTML,buildPageStyles} from './utils'
 	import Build from './extensions/Build.svelte';
 
-	// all the node stuff in happening in index.html
+	// references node stuff in happening in client.js
+
+	const siteData = window.siteData
+	const processPostCSS = window.processPostCSS
 
 	function saveData(data) {
 		window.updateDatabase(data)
 	}
 
-	let sites = siteData || []
+	let sites = siteData
 	let activeSite = siteData[0]
 
 	modal.create([
@@ -48,7 +51,7 @@
 		}
 	])
 
-	let data = sites[0]
+	let data = siteData[0]
 
 	onMount(() => {
 		const splashPage = document.querySelector('#splash-page')
@@ -60,15 +63,14 @@
 
 <Primo 
 	{data}
-	{sites}
+	sites={siteData}
 	role="developer"
 	showDashboardLink={false}
 	functions={{
 		processPostCSS
 	}}
-	on:save={({detail:data}) => {
-		activeSite = data
-		saveData(data)
+	on:save={({detail:sites}) => {
+		saveData(sites)
 	}} 
 	on:change={({detail:content}) => {
 		// console.log(content)
