@@ -9,6 +9,12 @@ import del from 'rollup-plugin-delete'
 
 const production = !process.env.ROLLUP_WATCH;
 
+function onwarn(warning, handler) {
+	if (warning.pluginCode === 'a11y-no-onchange') return // onchange listener needed for rendering component preview
+	// let Rollup handle all other warnings normally
+	handler(warning);
+}
+
 const preprocess = sveltePreprocess({
   preserve: ['systemjs-importmap'],
   postcss: {
@@ -86,6 +92,7 @@ export default [{
 		// instead of npm run dev), minify
 		production && terser()
 	],
+	onwarn,
 	watch: {
 		clearScreen: false
 	}
@@ -125,6 +132,7 @@ export default [{
 		typescript({ sourceMap: !production }),
 		production && terser()
 	],
+	onwarn,
 	watch: {
 		clearScreen: false
 	}
