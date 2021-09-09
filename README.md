@@ -1,26 +1,23 @@
-<p align="center">
-  <img src="logo.svg" alt="primo logo"/>
-</p>
+# Electron Forge + Svelte  Starter
 
-![demo](demo.gif)
+Get up and running with 💪 Svelte & ⚡ Electron. 
 
-# primo is a visual, integrated, delightful code editor and content management system
+## Usage
 
-The desktop app uses NWJS, so it gets built by zipping up all the files in the source directory and placing that file in what is basically an app skeleton. There are two directories because we don't want to include the actual source of the Svelte component (which gets used inside the desktop app). To tinker with the core primo app, you should fork [primo](https://github.com/primo-app/primo).
+```
+git clone https://github.com/codediodeio/electron-forge-svelte.git my-app
+cd my-app
 
-## TODO*
+npm install
+npm start
+```
 
-* remove extreneous modules
-* write basic docs for the extensions API
-* Windows/Linux versions
+![svelte electron](https://firebasestorage.googleapis.com/v0/b/fireship-app.appspot.com/o/assets%2Felectron-svelte-hello.png?alt=media&token=0d3ecb24-3024-4358-ac26-7676b3e60fa1)
 
-*help appreciated
+## Notes
 
-## App Scripts
+- src/index.js - Main electron process. 
+- src/svelte.js - Svelte app entrypoint. 
 
-* `npm run dev` build for dev and watch for changes
-* `npm run build` build for production
-
-### To package binary
-
-Place `app.nw` in `primo.app/Contents/Resources` (i.e. overwrite existing file)
+Setup [Electron with Svelte](https://fireship.io/snippets/svelte-electron-setup) from scratch. 
+Build cool projects with [Electron](https://fireship.io/tags/electron). 
