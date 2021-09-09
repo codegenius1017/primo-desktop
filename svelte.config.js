@@ -16,6 +16,7 @@ const config = {
 		target: '#svelte',
     vite: {
       server: {
+        force: true,
         open: false, // do not open the browser as we use electron
         port: process.env.PORT || 3333,
       },
