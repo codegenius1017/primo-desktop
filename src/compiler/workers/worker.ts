@@ -4,7 +4,6 @@ import registerPromiseWorker from 'promise-worker/register'
 import * as svelte from 'svelte/compiler'
 import postCSSWorker from './postcss.worker?worker'
 const PostCSSWorker = new postCSSWorker
-// const postCSSWorker = new Worker('/processors/postcss.worker.js');
 const cssPromiseWorker = new PromiseWorker(PostCSSWorker);
 
 const CDN_URL = "https://cdn.jsdelivr.net/npm";

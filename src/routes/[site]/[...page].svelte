@@ -1,11 +1,27 @@
+<script context="module">
+  export const ssr = false
+</script>
+
 <script>
+  import { onMount, tick } from 'svelte'
   import Primo, {
     modal as primoModal,
     createNewSite,
     site,
     savedSite,
     stores,
-  } from "@primo-app/primo";
+    registerProcessors,
+    PrimoFieldTypes,
+    fieldTypes,
+    modal,
+  } from '@primo-app/primo'
+  import { find } from 'lodash-es'
+  import sites from '../../stores/sites'
+  import activeSite from '../../stores/activeSite'
+  import Build from '../../extensions/Build.svelte'
+  import ImageField from '../../extensions/FieldTypes/ImageField.svelte'
+  import { get, set } from 'idb-keyval'
+  import { page } from '$app/stores'
   // import { find } from 'lodash'
   // import { signOut } from '../supabase/auth'
   // import { sites } from '../supabase/db'
@@ -35,8 +51,29 @@
 
   // import { router } from 'tinro'
   // import { buildStaticPage } from '@primo-app/primo/src/stores/helpers'
+  import { html, css } from '../../compiler/processors'
 
-  let role = "developer";
+  registerProcessors({ html, css })
+
+  primoModal.register([
+    {
+      id: 'BUILD',
+      component: Build,
+      componentProps: {
+        siteName: 'Website', // TODO - change
+      },
+      options: {
+        route: 'build',
+        width: 'md',
+        header: {
+          title: 'Build to Github',
+          icon: 'fab fa-github',
+        },
+      },
+    },
+  ])
+
+  let role = 'developer'
 
   // if (!$user.signedIn) {
   //   modal.show('AUTH', {
@@ -50,7 +87,7 @@
   // $activeSite = createNewSite({ name: 'Default Site' })
   // $: $user.signedIn && fetchSite($router.path)
 
-  let currentPath;
+  let currentPath
   async function fetchSite(fullPath) {
     // if (currentPath === fullPath) return
     // currentPath = fullPath
@@ -92,8 +129,13 @@
     // }
   }
 
-  let saveFile = {};
-  async function saveData(data) {
+  async function saveData(updatedSite) {
+    $sites = $sites.map((site) => {
+      if (site.id !== siteID) return site
+      return updatedSite
+    })
+
+    // window.updateDatabase(data)
     // saving = true
     // const includePrimoVersion = {
     //   ...data,
@@ -113,16 +155,16 @@
     // })
   }
 
-  async function transferSiteToStorage(args) {
-    // const { data } = await updateSiteData(args)
-    // if (!data) {
-    //   const uploaded = await uploadSiteData(args)
-    //   if (!uploaded.data) return false
-    // }
-    // return true
-  }
+  fieldTypes.register([
+    {
+      id: 'image',
+      label: 'Image',
+      component: ImageField,
+    },
+    ...PrimoFieldTypes,
+  ])
 
-  let saving = false;
+  let saving = false
 
   // let libraries = []
   // downloadSiteData({
@@ -139,47 +181,50 @@
   //     },
   //   ]
   // })
+
+  let mounted = false
+  onMount(() => (mounted = true))
+
+  $: siteID = $page.params.site
+  $: data = $activeSite || createNewSite({ id: 'test', name: 'Test' })
+  $: mounted && setActiveSite(siteID)
+  async function setActiveSite(siteID) {
+    // necessary for rollup to load (?)
+    setTimeout(() => {
+      const site = find($sites, ['id', siteID])
+      if (site) {
+        $activeSite = site
+      }
+    }, 100)
+  }
 </script>
 
-<Primo {role} {saving} on:save={async ({ detail: data }) => saveData(data)} />
+<svelte:head>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+</svelte:head>
 
-<style global>
-  @tailwind base;
-  :global(:root) {
-    --primo-color-primored: rgb(248, 68, 73);
-    --primo-color-primored-dark: rgb(186, 37, 42);
-    --primo-color-white: white;
-    --primo-color-codeblack: rgb(30, 30, 30);
-    --primo-color-codeblack-opaque: rgba(30, 30, 30, 0.9);
+<Primo
+  {data}
+  {role}
+  {saving}
+  on:save={async ({ detail: data }) => saveData(data)}
+/>
 
-    --primo-color-black: rgb(17, 17, 17);
-    --primo-color-black-opaque: rgba(17, 17, 17, 0.9);
+<style global lang="postcss">
+  .primo-reset {
+    @tailwind base;
+    font-family: 'Satoshi', sans-serif !important;
 
-    --color-gray-1: rgb(245, 245, 245);
-    --color-gray-2: rgb(229, 229, 229);
-    --color-gray-3: rgb(212, 212, 212);
-    --color-gray-4: rgb(156, 163, 175);
-    --color-gray-5: rgb(115, 115, 115);
-    --color-gray-6: rgb(82, 82, 82);
-    --color-gray-7: rgb(64, 64, 64);
-    --color-gray-8: rgb(38, 38, 38);
-    --color-gray-9: rgb(23, 23, 23);
+    button,
+    button * {
+      cursor: pointer;
+    }
+  }
 
-    --font-size-1: 0.75rem;
-    --font-size-2: 0.875rem;
-    --font-size-3: 1.125rem;
-    --font-size-4: 1.25rem;
-
-    box-shadow: 0 0 #0000 0 0 #0000, 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --box-shadow-xl: 0 0 #0000, 0 0 #0000, 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-    --transition-colors: background-color 0.1s, border-color 0.1s, color 0.1s,
-      fill 0.1s, stroke 0.1s;
-
-    --padding-container: 15px;
-    --max-width-container: 1900px;
-
-    --ring: 0px 0px 0px 2px var(--primo-color-primored);
+  body {
+    margin: 0;
   }
 </style>
