@@ -31,6 +31,7 @@
         ...$config,
         saveDir: dir,
       }
+      window.location.reload()
     }
   }
 </script>

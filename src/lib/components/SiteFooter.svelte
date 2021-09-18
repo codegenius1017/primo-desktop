@@ -9,14 +9,22 @@
   </span>
   <div class="footer-links">
     <div>
-      <a href="https://discord.gg/vzSFTS9">Community</a>
-      |
-      <a href="https://primo.af/terms-of-service" title="Terms and Conditions "
-        >Terms</a
+      <a href="https://discord.gg/vzSFTS9" rel="external" target="blank"
+        >Community</a
       >
       |
-      <a href="https://primo.af/privacy-policy" title="Privacy Policy "
-        >Privacy</a
+      <a
+        href="https://primo.af/terms-of-service"
+        title="Terms and Conditions"
+        rel="external"
+        target="blank">Terms</a
+      >
+      |
+      <a
+        href="https://primo.af/privacy-policy"
+        title="Privacy Policy"
+        rel="external"
+        target="blank">Privacy</a
       >
     </div>
     <span class="copyright primo">©</span>

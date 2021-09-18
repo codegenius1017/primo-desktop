@@ -1,8 +1,8 @@
 <script>
   import axios from 'axios'
-  import _ from 'lodash'
-  import JSZip from 'jszip'
-  import { saveAs } from 'file-saver'
+  import { flattenDeep } from 'lodash-es'
+  // import JSZip from 'jszip'
+  // import { saveAs } from 'file-saver'
   // import { getGithubAuthToken } from '../../supabase/middleware'
   import Hosting from '$lib/components/Hosting.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
@@ -394,7 +394,7 @@
         const json = JSON.stringify(site)
 
         return [
-          ..._.flattenDeep(pages),
+          ...flattenDeep(pages),
           // {
           //   path: `styles.css`,
           //   content: styles
@@ -413,7 +413,7 @@
           const symbolHTML = site.symbols
             .map((symbol) => symbol.value.html)
             .join(' ')
-          const componentHTML = _.flattenDeep(
+          const componentHTML = flattenDeep(
             site.pages.map((page) =>
               page.content
                 .filter(
@@ -498,8 +498,8 @@
   <div class="publish">
     <div>
       <Hosting />
-      <div class="boxes">
-        <!-- {#each $activeSite.deployments as deployment}
+      <!-- <div class="boxes">
+        {#each $activeSite.deployments as deployment}
           <div class="box">
             <a class="title" href="https://{$hosts.vercel.url}" target="blank">
               <span>{$hosts.vercel.url}</span>
@@ -515,11 +515,11 @@
                 .vercel.name}/settings/domains">Connect Custom Domain</a
             >
           </div>
-        {/each} -->
-      </div>
+        {/each}
+      </div> -->
     </div>
     <div>
-      {#if $hosts}
+      <!-- {#if $hosts}
         <div class="boxes">
           <div class="box">
             {#each $hosts as host}
@@ -530,7 +530,7 @@
                     hosts.update((h) => h.filter((h) => h.type !== host.type))
                   }}>remove</button
                 >
-                <!-- <span
+                <span
                   >Publishing to <a target="blank" href={host.deployment}
                     >{host.deployment.domain}</a
                   >
@@ -539,12 +539,12 @@
                   >Last published {timeAgo.format(
                     host.deployment.createdAt
                   )}</span
-                > -->
+                >
               </div>
             {/each}
           </div>
         </div>
-      {/if}
+      {/if} -->
       <header class="review">
         <div>
           {#if published}
@@ -619,7 +619,7 @@
 
 <style lang="postcss">
   .title {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
     color: var(--color-gray-1);
     font-weight: 600;
     transition: color 0.1s;

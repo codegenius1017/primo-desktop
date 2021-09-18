@@ -1,9 +1,9 @@
 {
-  "name": "svelte-electron-forge",
-  "productName": "svelte-electron-forge",
+  "name": "primo",
+  "productName": "primo",
   "version": "1.0.0",
   "description": "Svelte + Electron Forge",
-  "main": "src/index.js",
+  "main": "src/index.cjs",
   "type": "module",
   "scripts": {
     "electron": "electron .",
@@ -25,8 +25,8 @@
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
   },
   "keywords": [],
-  "author": "jeffd23",
-  "license": "MIT",
+  "author": "mateomorris",
+  "license": "AGPL",
   "config": {
     "forge": {
       "packagerConfig": {},
@@ -57,10 +57,19 @@
   "dependencies": {
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.4",
-    "@primo-app/primo": "^1.3.16",
+    "@primo-app/primo": "file:../primo",
     "autoprefixer": "^10.3.4",
+    "axios": "^0.21.4",
+    "electron": "^14.0.0",
     "electron-reload": "^1.5.0",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^8.0.1",
+    "esm": "^3.2.25",
+    "file-saver": "^2.0.5",
+    "fs-extra": "^10.0.0",
+    "idb-keyval": "^6.0.2",
+    "install": "^0.13.0",
+    "lodash-es": "^4.17.21",
     "postcss-nested": "^5.0.6",
     "promise-worker": "^2.0.1",
     "sirv-cli": "^0.4.4",
@@ -79,7 +88,6 @@
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.11",
     "@tsconfig/svelte": "^2.0.1",
     "concurrently": "^5.1.0",
-    "electron": "8.0.2",
     "postcss-preset-env": "^6.7.0",
     "prettier": "~2.2.1",
     "prettier-plugin-svelte": "^2.2.0",

@@ -1,6 +1,4 @@
-// import { app, BrowserWindow } from 'electron'
-// import path from 'path'
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 
 // Live Reload
@@ -18,6 +16,8 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
+      preload: `${__dirname}/preload.cjs`,
+      enableRemoteModule: true,
       nodeIntegration: true,
       nativeWindowOpen: true
     },
@@ -32,8 +32,11 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, '../public/index.html'));
   }
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  // open external links in browser
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+      shell.openExternal(url);
+      return { action: 'deny' };
+  });
 
   function loadVitePage(port) {
     mainWindow.loadURL(`http://localhost:${port}`).catch((err) => {
@@ -46,9 +49,8 @@ const createWindow = () => {
   }
 };
 
-app.whenReady().then(() => {
-  createWindow()
-})
+app.whenReady().then(createWindow)
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -64,16 +66,14 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on("web-contents-created", (...[/* event */, webContents]) => {
 
-  //Webview is being shown here as a window type
-  console.log(webContents.getType())
+// On right-click, open element in inspector
+app.on("web-contents-created", (...[/* event */, webContents]) => {
   webContents.on("context-menu", (event, click) => {
     event.preventDefault();
     mainWindow.webContents.openDevTools()
     mainWindow.webContents.inspectElement(click.x, click.y)
   }, false);
-
 });
 
 // app.on('activate', () => {
@@ -86,3 +86,51 @@ app.on("web-contents-created", (...[/* event */, webContents]) => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+const fs = require('fs-extra')
+const Store = require('electron-store');
+const store = new Store();
+
+let savePath = store.get('config.savePath') || app.getPath('userData') + '/sites'
+
+// create sites directory if non-existant
+fs.ensureDirSync(savePath)
+
+// Save/Load Data
+ipcMain.on('load-data', (event, directory) => {
+  const files = fs.readdirSync(savePath)
+  const sites = []
+  files.forEach(file => {
+    const data = fs.readJsonSync(`${directory}/${file}`, { throws: false })
+    if (data) sites.push(data)
+  })
+  event.returnValue = sites
+})
+
+ipcMain.on('save-data', (event, sites) => {
+  console.log('Saving to', savePath)
+  sites.forEach(site => {
+    fs.writeJsonSync(`${savePath}/${site.id}.json`, site, { throws: false, spaces: '\t' })
+  })
+  event.returnValue = true
+})
+
+ipcMain.on('delete-site', (event, site) => {
+  console.log('DELETING', `${savePath}/${site}.json`)
+  fs.unlinkSync(`${savePath}/${site}.json`)
+  event.returnValue = true
+})
+
+const {dialog} = require('electron')
+ipcMain.on('set-save-directory', async (event, arg) => {
+  const res = await dialog.showOpenDialog({ properties: ['openDirectory', 'createDirectory'] })
+  if (!res.canceled) {
+    savePath = res.filePaths[0]
+    store.set('config.savePath', savePath);
+  }
+  event.reply('get-save-directory', res)
+})
+
+ipcMain.on('current-save-directory', async (event, arg) => {
+  event.returnValue = savePath
+})

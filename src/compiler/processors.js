@@ -8,12 +8,6 @@ import svelteWorker from './workers/worker?worker'
 import {site} from '@primo-app/primo/src/stores/data/draft'
 import activePage from '@primo-app/primo/src/stores/app/activePage'
 
-// const postCSSWorker = new Worker('/processors/postcss.worker.js');
-// const cssPromiseWorker = new PromiseWorker(postCSSWorker);
-
-// const handlebarsWorker = new Worker('/processors/handlebars.worker.js');
-// const htmlPromiseWorker = new PromiseWorker(handlebarsWorker);
-
 const SvelteWorker = new svelteWorker()
 const htmlPromiseWorker = new PromiseWorker(SvelteWorker);
 

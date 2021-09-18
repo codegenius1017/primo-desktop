@@ -27,6 +27,13 @@
     loading = false
 
     siteData = createSite({ id: siteID, name: siteName })
+
+    console.log({
+      siteData,
+      siteID,
+      siteName,
+    })
+
     onSuccess(siteData)
 
     // console.log('1')

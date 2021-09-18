@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { browser } from '$app/env'
+  import { goto } from '$app/navigation'
   import '$lib/assets/reset.css'
   import SignInNav from '$lib/components/SignInNav.svelte'
   import SiteFooter from '$lib/components/SiteFooter.svelte'
@@ -9,7 +11,7 @@
   import { html, css } from '../compiler/processors'
   import { registerProcessors } from '@primo-app/primo'
 
-  registerProcessors({ html, css })
+  browser && registerProcessors({ html, css })
 
   // mixpanel.track('Dashboard')
 
@@ -24,13 +26,11 @@
       props: {
         onSuccess: (site) => {
           $sites = [...$sites, site]
-          hide()
+          goto(site.id)
         },
       },
     })
   }
-
-  $: console.log('SITES', $sites)
 
   async function deleteSiteItem(siteID: string): Promise<any> {
     const confirm = window.confirm('Are you sure you want to delete this site?')

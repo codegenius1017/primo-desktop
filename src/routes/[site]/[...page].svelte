@@ -20,7 +20,6 @@
   import activeSite from '../../stores/activeSite'
   import Build from '../../extensions/Build.svelte'
   import ImageField from '../../extensions/FieldTypes/ImageField.svelte'
-  import { get, set } from 'idb-keyval'
   import { page } from '$app/stores'
   // import { find } from 'lodash'
   // import { signOut } from '../supabase/auth'
@@ -130,6 +129,7 @@
   }
 
   async function saveData(updatedSite) {
+    console.log({ siteID, updatedSite })
     $sites = $sites.map((site) => {
       if (site.id !== siteID) return site
       return updatedSite
