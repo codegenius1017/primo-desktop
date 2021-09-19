@@ -92,6 +92,7 @@ const Store = require('electron-store');
 const store = new Store();
 
 let savePath = store.get('config.savePath') || app.getPath('userData') + '/sites'
+let hosts = store.get('config.hosts') || []
 
 // create sites directory if non-existant
 fs.ensureDirSync(savePath)
@@ -108,7 +109,6 @@ ipcMain.on('load-data', (event, directory) => {
 })
 
 ipcMain.on('save-data', (event, sites) => {
-  console.log('Saving to', savePath)
   sites.forEach(site => {
     fs.writeJsonSync(`${savePath}/${site.id}.json`, site, { throws: false, spaces: '\t' })
   })
@@ -116,7 +116,6 @@ ipcMain.on('save-data', (event, sites) => {
 })
 
 ipcMain.on('delete-site', (event, site) => {
-  console.log('DELETING', `${savePath}/${site}.json`)
   fs.unlinkSync(`${savePath}/${site}.json`)
   event.returnValue = true
 })
@@ -133,4 +132,14 @@ ipcMain.on('set-save-directory', async (event, arg) => {
 
 ipcMain.on('current-save-directory', async (event, arg) => {
   event.returnValue = savePath
+})
+
+ipcMain.on('set-hosts', async (event, arg) => {
+  hosts = arg
+  store.set('config.hosts', arg);
+  event.returnValue = true
+})
+
+ipcMain.on('get-hosts', async (event) => {
+  event.returnValue = hosts
 })

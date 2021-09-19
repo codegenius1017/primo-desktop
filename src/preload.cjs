@@ -16,6 +16,14 @@ contextBridge.exposeInMainWorld('primo', {
       })
       return canceled ? null : filePaths[0]
     },
+    setHosts: (hosts) => {
+      const success = ipcRenderer.sendSync('set-hosts', hosts)
+      return success
+    },
+    getHosts: () => {
+      const hosts = ipcRenderer.sendSync('get-hosts')
+      return hosts
+    }
   },
   data: {
     deleteSite: (siteID) => {
