@@ -1,6 +1,8 @@
 <script>
   import axios from 'axios'
   import { flattenDeep } from 'lodash-es'
+  import TimeAgo from 'javascript-time-ago'
+  import en from 'javascript-time-ago/locale/en'
   // import JSZip from 'jszip'
   // import { saveAs } from 'file-saver'
   // import { getGithubAuthToken } from '../../supabase/middleware'
@@ -34,8 +36,8 @@
   // import en from 'javascript-time-ago/locale/en'
   import { page } from '$app/stores'
 
-  // TimeAgo.addDefaultLocale(en)
-  // const timeAgo = new TimeAgo('en-US')
+  TimeAgo.addDefaultLocale(en)
+  const timeAgo = new TimeAgo('en-US')
 
   async function pushToRepo() {
     feedback = `Pushing site to Github`
@@ -200,6 +202,7 @@
   // }
   // getDeployments()
 
+  let deployment
   async function publishToHosts() {
     loading = true
 
@@ -223,6 +226,7 @@
                 projectSettings: {
                   framework: null,
                 },
+                target: 'production',
               },
               {
                 headers: {
@@ -232,30 +236,7 @@
             )
             .catch((e) => ({ data: null }))
 
-          console.log({ data })
-
-          sites.update((s) =>
-            s.map((site) =>
-              site.name === siteID
-                ? {
-                    ...site,
-                    deployments: [...site.deployments, data],
-                  }
-                : site
-            )
-          )
-
-          console.log($sites)
-
-          // sites.updateActive((site) => ({
-          //   ...site,
-          //   deployments: [
-          //     ...site.deployments,
-
-          //   ]
-          // }))
-
-          console.log({ res })
+          deployment = data
         } else if (type === 'github') {
           // TODO
           // if no host exists, attempt to publish to new repo
@@ -346,19 +327,19 @@
 
       const pages = await Promise.all([
         ...site.pages.map((page) => buildPageTree({ page, site })),
-        [
-          {
-            path: `primo/index.html`,
-            content: primoPage,
-          },
-          // {
-          //   path: 'robots.txt',
-          //   content: `
-          //   # Example 3: Block all but AdsBot crawlers
-          //   User-agent: *
-          //   Disallow: /`
-          // },
-        ],
+        // [
+        //   {
+        //     path: `primo/index.html`,
+        //     content: primoPage,
+        //   },
+        //   // {
+        //   //   path: 'robots.txt',
+        //   //   content: `
+        //   //   # Example 3: Block all but AdsBot crawlers
+        //   //   User-agent: *
+        //   //   Disallow: /`
+        //   // },
+        // ],
       ])
 
       return buildSiteTree(pages, site)
@@ -399,14 +380,14 @@
           //   path: `styles.css`,
           //   content: styles
           // },
-          {
-            path: `primo.json`,
-            content: json,
-          },
-          {
-            path: 'README.md',
-            content: `# Built with [primo](https://primo.af)`,
-          },
+          // {
+          //   path: `primo.json`,
+          //   content: json,
+          // },
+          // {
+          //   path: 'README.md',
+          //   content: `# Built with [primo](https://primo.af)`,
+          // },
         ]
 
         function getSiteHTML(site) {
@@ -545,6 +526,18 @@
           </div>
         </div>
       {/if} -->
+      {#if deployment}
+        <div class="boxes">
+          <div class="box">
+            <div class="deployment">
+              <a href={deployment.alias[0]} rel="external"
+                >{deployment.alias[0]}</a
+              >
+              <span>{timeAgo.format(deployment.createdAt)}</span>
+            </div>
+          </div>
+        </div>
+      {/if}
       <header class="review">
         <div>
           {#if published}

@@ -1,8 +1,3 @@
-<script context="module">
-  import { writable } from 'svelte/store'
-  const hostUser = writable(null)
-</script>
-
 <script>
   import axios from 'axios'
   // import TimeAgo from 'javascript-time-ago'
@@ -36,7 +31,6 @@
       .catch((e) => {
         data: null
       })
-    console.log({ data })
     if (data) {
       hosts.update((h) => {
         console.log({ h })
@@ -98,8 +92,6 @@
   // $: getAccountData($user.tokens)
 
   let enteredToken
-
-  $: console.log($hosts)
 </script>
 
 <div class="boxes">

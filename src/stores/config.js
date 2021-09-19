@@ -1,27 +1,14 @@
-import { writable, get } from 'svelte/store';
-import {get as getIDB, set as setIDB} from 'idb-keyval'
-import { browser } from '$app/env';
+import { writable } from 'svelte/store';
 
+const { config } = window.primo
 
-const config = writable({
-  saveDir: ''
+const store = writable({
+  saveDir: window.primo.config.getSavedDirectory(),
+  hosts: window.primo.config.getHosts()
 })
 
-if (browser) {
-  console.log(window.primo)
-  let defaultSaveDirectory = window.primo.config.getSavedDirectory()  
+store.subscribe((c) => {
+  config.setHosts(c.hosts)
+})
 
-  getIDB('config').then(res => {
-    config.set({
-      ...res,
-      saveDir: res.saveDir || defaultSaveDirectory
-    })
-  })
-
-  config.subscribe((c) => {
-    setIDB('config', c)
-  })
-
-}
-
-export default config
+export default store

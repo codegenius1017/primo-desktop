@@ -28,49 +28,7 @@
 
     siteData = createSite({ id: siteID, name: siteName })
 
-    console.log({
-      siteData,
-      siteID,
-      siteName,
-    })
-
     onSuccess(siteData)
-
-    // console.log('1')
-    // const site = await supabaseSites.create({
-    //   name: siteName,
-    //   owner: $user.uid,
-    //   url: siteURL,
-    // })
-
-    // console.log('2')
-    // const { websites } = users.get($user.uid, `websites`)
-
-    // console.log('3')
-    // await users.update($user.uid, {
-    //   websites: websites ? [...websites, site.id] : [site.id],
-    // })
-
-    // console.log('4')
-    // const homepage = data.pages.filter((p) => p.id === 'index')[0]
-    // // const preview = await buildStaticPage({ page: homepage, site: data })
-    // const preview = `<div></div>`
-
-    // console.log('5')
-    // await Promise.all([
-    //   uploadPagePreview({
-    //     path: `${$user.uid}/${site.id}/preview.html`,
-    //     preview,
-    //   }),
-    //   uploadSiteData({ owner: $user.uid, id: site.id, data }),
-    // ])
-
-    // console.log('6')
-
-    // onSuccess(site.url)
-    // loading = false
-
-    // console.log({ data, preview })
   }
 
   function validateUrl() {
