@@ -1,6 +1,5 @@
 import {get, writable} from 'svelte/store'
 import { browser } from '$app/env'
-import {isEqual} from 'lodash-es'
 
 const site = {
   id: '',

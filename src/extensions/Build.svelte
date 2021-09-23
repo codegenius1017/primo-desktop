@@ -530,8 +530,10 @@
         <div class="boxes">
           <div class="box">
             <div class="deployment">
-              <a href={deployment.alias[0]} rel="external"
-                >{deployment.alias[0]}</a
+              <a
+                href="https://{deployment.alias[0]}"
+                rel="external"
+                target="blank">{deployment.alias[0]}</a
               >
               <span>{timeAgo.format(deployment.createdAt)}</span>
             </div>
