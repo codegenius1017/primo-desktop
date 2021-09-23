@@ -1,20 +1,20 @@
 <script>
-  import { fade, slide } from 'svelte/transition'
-
+  import axios from 'axios'
   import Tabs from '$lib/ui/Tabs.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
   import TextField from '$lib/ui/TextField.svelte'
-  import { makeValidUrl } from '$lib/utils'
   import config from '../../../stores/config'
   import Hosting from '../Hosting.svelte'
 
+  export let tab = 0
+
   let tabs = [
-    // {
-    //   label: 'Profile',
-    //   icon: 'home',
-    // },
     {
       label: 'Hosting',
+      icon: 'globe',
+    },
+    {
+      label: 'Server',
       icon: 'server',
     },
     {
@@ -22,7 +22,7 @@
       icon: 'cog',
     },
   ]
-  let activeTab = tabs[0]
+  let activeTab = tabs[tab]
 
   async function selectDirectory() {
     const dir = await window.primo.config.selectDirectory()
@@ -34,6 +34,36 @@
       window.location.reload()
     }
   }
+
+  const serverConfig = $config.serverConfig
+  let connectedToServer = false
+  let serverErrorMessage = ''
+  let loading = false
+  async function connectToServer() {
+    loading = true
+    const endpoint = `${serverConfig.url}/api.json?token=${serverConfig.token}`
+    let data
+    try {
+      const res = await axios.get(endpoint)
+      data = res.data.success
+    } catch (e) {
+      console.error(e)
+      data = null
+    }
+    if (data) {
+      config.update((c) => ({
+        ...c,
+        serverConfig,
+      }))
+      connectedToServer = true
+      serverErrorMessage = ''
+    } else {
+      connectedToServer = false
+      serverErrorMessage = `Could not connect to ${serverConfig.url}. Ensure the address and token are correct & try again.`
+    }
+    loading = false
+  }
+  connectToServer()
 </script>
 
 <main>
@@ -42,15 +72,40 @@
     {#if activeTab.label === 'Hosting'}
       <h1 class="primo-heading-lg">
         Hosting <span
-          >Connect to your favorite webhost to publish your primo sites to the
-          internet</span
+          >Connect to an available webhost to publish your sites to the internet</span
         >
       </h1>
-      <Hosting showDetails={false} />
+      <Hosting />
+    {:else if activeTab.label === 'Server'}
+      <h1 class="primo-heading-lg">
+        Primo Server <span
+          >Connect to a primo server to manage your sites from your desktop</span
+        >
+      </h1>
+      <form on:submit|preventDefault={connectToServer}>
+        <TextField
+          placeholder="https://myselfhostedprimoserver.com"
+          on:input={() => (connectedToServer = false)}
+          bind:value={serverConfig.url}
+          label="Address"
+        />
+        <TextField
+          placeholder="IU93HUKJNT062BDS998U2JKOI"
+          on:input={() => (connectedToServer = false)}
+          bind:value={serverConfig.token}
+          label="API Token"
+        />
+        <span>{serverErrorMessage}</span>
+        <PrimaryButton {loading} type="submit" disabled={connectedToServer}
+          >{connectedToServer
+            ? 'Successfully Connected'
+            : 'Connect to Server'}</PrimaryButton
+        >
+      </form>
     {:else if activeTab.label === 'Advanced'}
       <h1 class="primo-heading-lg">Advanced</h1>
       <div>
-        <h2>Save directory</h2>
+        <h2>Local Save Directory</h2>
         <span>{$config.saveDir}</span>
         <PrimaryButton on:click={selectDirectory}
           >Select directory</PrimaryButton

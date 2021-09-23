@@ -71,7 +71,6 @@ app.on('window-all-closed', () => {
 app.on("web-contents-created", (...[/* event */, webContents]) => {
   webContents.on("context-menu", (event, click) => {
     event.preventDefault();
-    mainWindow.webContents.openDevTools()
     mainWindow.webContents.inspectElement(click.x, click.y)
   }, false);
 });
@@ -93,6 +92,10 @@ const store = new Store();
 
 let savePath = store.get('config.savePath') || app.getPath('userData') + '/sites'
 let hosts = store.get('config.hosts') || []
+let serverConfig = store.get('config.serverConfig') || {
+  url: '',
+  token: ''
+}
 
 // create sites directory if non-existant
 fs.ensureDirSync(savePath)
@@ -120,6 +123,7 @@ ipcMain.on('delete-site', (event, site) => {
   event.returnValue = true
 })
 
+// SAVE DIRECTORY
 const {dialog} = require('electron')
 ipcMain.on('set-save-directory', async (event, arg) => {
   const res = await dialog.showOpenDialog({ properties: ['openDirectory', 'createDirectory'] })
@@ -134,6 +138,7 @@ ipcMain.on('current-save-directory', async (event, arg) => {
   event.returnValue = savePath
 })
 
+// HOSTS
 ipcMain.on('set-hosts', async (event, arg) => {
   hosts = arg
   store.set('config.hosts', arg);
@@ -142,4 +147,15 @@ ipcMain.on('set-hosts', async (event, arg) => {
 
 ipcMain.on('get-hosts', async (event) => {
   event.returnValue = hosts
+})
+
+// SERVER
+ipcMain.on('set-server-config', async (event, arg) => {
+  serverConfig = arg
+  store.set('config.serverConfig', arg);
+  event.returnValue = true
+})
+
+ipcMain.on('get-server-config', async (event) => {
+  event.returnValue = serverConfig
 })

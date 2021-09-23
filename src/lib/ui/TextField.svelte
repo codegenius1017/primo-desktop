@@ -28,7 +28,7 @@
   </div>
 </label>
 
-<style>
+<style lang="postcss">
   label {
     display: block;
     margin-bottom: 0.5rem;
@@ -68,6 +68,10 @@
         width: 100%;
         background: transparent;
         padding: 0.5rem;
+      }
+
+      input::placeholder {
+        color: var(--color-gray-6);
       }
 
       input:focus {

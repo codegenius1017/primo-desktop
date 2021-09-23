@@ -3,8 +3,8 @@
   import { flattenDeep } from 'lodash-es'
   import TimeAgo from 'javascript-time-ago'
   import en from 'javascript-time-ago/locale/en'
-  // import JSZip from 'jszip'
-  // import { saveAs } from 'file-saver'
+  import JSZip from 'jszip'
+  import { saveAs } from 'file-saver'
   // import { getGithubAuthToken } from '../../supabase/middleware'
   import Hosting from '$lib/components/Hosting.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
@@ -39,174 +39,27 @@
   TimeAgo.addDefaultLocale(en)
   const timeAgo = new TimeAgo('en-US')
 
-  async function pushToRepo() {
-    feedback = `Pushing site to Github`
-    loading = true
-    // const success = await buildSiteTree($site, $path)
-    // if (success) {
-    //   feedback = 'Good to go!'
-    //   progress = 100
-    //   setTimeout(() => {
-    //     modal.hide()
-    //   }, 2000)
-    // } else {
-    //   feedback = 'Something went wrong :('
-    // }
-  }
+  const siteID = $page.params.site
 
-  async function buildSiteTree(siteData, siteName) {
-    // const files = await buildSiteBundle(siteData, siteName)
-    // return await buildSite(
-    //   {
-    //     site: $path,
-    //     files,
-    //     message: commitMessage,
-    //   },
-    //   (ratio) => {
-    //     progress = ratio * 100
-    //   }
-    // ).catch((e) => {
-    //   alert(`The site couldn't be saved for some reason. Sorry about that.`)
-    //   console.error(e)
-    // })
-  }
-
-  let repoName = ''
-  $: repoName.replace(' ', '-')
-
-  let feedback = ''
   let loading = false
-  let progress = 0
-
-  let commitMessage = ''
-
-  // if no repo exists for this site
-  // If logged into Github
-  // Option to create repository
-  // If not logged into Github
-  // Sign in w/ Github
-
-  // get repo from db before this
-  // let currentMessage = $user.token
-  let currentMessage = ''
-    ? `Your website will get built out to a Github repository. You can publish it from there.`
-    : `Download your website or connect your Github account to save your site to a repository`
-  async function startCreatingRepo() {
-    loading = true
-    // const sitePath = $path.split('/')[1]
-    // const repoName = `primo-` + makeValidUrl(sitePath)
-    // const repoData = await createRepo({ name: repoName })
-    // loading = false
-    // if (repoData) {
-    //   const { html_url, owner, name, private: isPrivate } = repoData
-    //   // save repo to db
-    //   const repoRow = await repos.create({
-    //     owner: owner.login,
-    //     name,
-    //     url: html_url,
-    //     isPublic: !isPrivate,
-    //   })
-    //   // // attach new repo row to website
-    //   sites.update($currentSite, {
-    //     repo: repoRow.id,
-    //   })
-    //   $repo = repoRow
-    //   commitMessage = `Repository created at ${$repo.url}, building and pushing site`
-    //   pushToRepo()
-    //   // Change screen to 'Your website has been built to {url}, this is where changes will be built to in the future'
-    // } else {
-    //   alert(
-    //     `Could not create a repository. Ensure you don't already have a repo named ${repoName}`
-    //   )
-    // }
-  }
 
   async function downloadSite() {
     loading = true
-    // const zip = new JSZip()
-    // const files = await buildSiteBundle($site, $path)
-    // files.forEach((file) => {
-    //   zip.file(
-    //     file.path,
-    //     typeof file.content === 'string'
-    //       ? file.content
-    //       : 'h1 { font-size: 4rem; }'
-    //   )
-    // })
-    // const toDownload = await zip.generateAsync({ type: 'blob' })
-    // saveAs(toDownload, `${$path}.zip`)
-    // modal.hide()
+    const zip = new JSZip()
+    const files = await buildSiteBundle($site, siteID)
+    files.forEach((file) => {
+      zip.file(file.path, file.content)
+    })
+    const toDownload = await zip.generateAsync({ type: 'blob' })
+    saveAs(toDownload, `${siteID}.zip`)
+    modal.hide()
   }
 
-  // $: if ($router.query.code) connectRepo($router.query.code)
-  // async function connectRepo(code = null) {
-  //   if ($unsaved) {
-  //     window.alert('Please save your site before continuing')
-  //     return
-  //   }
-
-  //   const client_id = '39b8a7b215c8e8add020'
-
-  //   //
-  //   if ($user.token) {
-  //   } else if (!code) {
-  //     window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=public_repo&redirect_uri=${window.location.href}`
-  //   } else {
-  //     const authtoken = await getGithubAuthToken(code)
-
-  //     users.update($user.uid, {
-  //       tokens: {
-  //         github: authtoken,
-  //       },
-  //     })
-
-  //     user.update((u) => ({
-  //       ...u,
-  //       token: authtoken,
-  //     }))
-
-  //     const foo = await axios.get('https://api.github.com/user', {
-  //       headers: {
-  //         Authorization: 'token ' + authtoken,
-  //       },
-  //     })
-  //   }
-
-  //   // Show Github account info
-  // }
-
-  // let token = $tokens.vercel || ''
-
-  // 1. Connect repository
-  // 2. Connect hosting (deploy with repository)
-
-  let deployments = []
-  let gettingDeployments = true
-  // async function getDeployments() {
-  //   gettingDeployments = true
-  //   axios
-  //     .get('https://api.vercel.com/v5/now/deployments', {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     })
-  //     .then(async ({ data }) => {
-  //       deployments = data.deployments.slice(0, 5)
-  //     })
-  //     .catch((e) => {
-  //       console.error(e)
-  //     })
-  //   setTimeout(() => {
-  //     gettingDeployments = false
-  //   }, 1000)
-  // }
-  // getDeployments()
+  $: console.log($hosts)
 
   let deployment
   async function publishToHosts() {
     loading = true
-
-    const siteID = $page.params.site
 
     // const name = window.location.pathname.split('/')[2]
     const files = (await buildSiteBundle($site, siteID)).map((file) => ({
@@ -237,81 +90,17 @@
             .catch((e) => ({ data: null }))
 
           deployment = data
-        } else if (type === 'github') {
-          // TODO
-          // if no host exists, attempt to publish to new repo
-          // is host exists, push to repo
-          // enable connecting to existing repo
         }
       })
     )
 
     loading = false
 
-    // $hosts = updatedHosts
-    // sites.update($currentSite, {
-    //   hosts: updatedHosts,
-    // })
-    // loading = false
+    pages = []
+  }
 
-    // async function publishToHost({
-    //   key,
-    //   endpoint,
-    //   args,
-    //   error = null,
-    //   token,
-    //   onSuccess = (data) => data,
-    // }) {
-    //   const res = await axios
-    //     .post(endpoint, args, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     })
-    //     .catch((e) => {
-    //       console.error(e)
-    //     })
-    //   if (!res) {
-    //     connectingHost = true
-    //     errorMessage = error
-    //     return null
-    //   } else if (res.data) {
-    //     confetti({
-    //       particleCount: 50,
-    //       startVelocity: 30,
-    //       spread: 180,
-    //       origin: {
-    //         x: 1,
-    //         y: 0,
-    //       },
-    //       zIndex: 99999,
-    //     })
-    //     return {
-    //       ...onSuccess(res.data),
-    //     }
-    //     // published = true
-    //     // domainName.set(res.data.alias[0])
-    //     // const { alias, createdAt } = res.data
-    //     // const updatedHost = {
-    //     //   ...$hosts,
-    //     //   vercel: {
-    //     //     ...$hosts?.vercel,
-    //     //     deployment: {
-    //     //       domain: alias[0],
-    //     //       createdAt,
-    //     //     },
-    //     //   },
-    //     // }
-    //     // $hosts = updatedHost
-    //     // sites.update($currentSite, {
-    //     //   hosts: updatedHost,
-    //     // })
-    //     // loading = false
-    //   }
-    // }
-
-    async function buildSiteBundle(site, siteName) {
-      const primoPage = `
+  async function buildSiteBundle(site, siteName) {
+    const primoPage = `
         <!doctype html>
         <html lang="en">
           <head>
@@ -325,152 +114,90 @@
         </html>
       `
 
-      const pages = await Promise.all([
-        ...site.pages.map((page) => buildPageTree({ page, site })),
-        // [
-        //   {
-        //     path: `primo/index.html`,
-        //     content: primoPage,
-        //   },
-        //   // {
-        //   //   path: 'robots.txt',
-        //   //   content: `
-        //   //   # Example 3: Block all but AdsBot crawlers
-        //   //   User-agent: *
-        //   //   Disallow: /`
-        //   // },
-        // ],
-      ])
+    const pages = await Promise.all([
+      ...site.pages.map((page) => buildPageTree({ page, site })),
+      // [
+      //   {
+      //     path: `primo/index.html`,
+      //     content: primoPage,
+      //   },
+      //   // {
+      //   //   path: 'robots.txt',
+      //   //   content: `
+      //   //   # Example 3: Block all but AdsBot crawlers
+      //   //   User-agent: *
+      //   //   Disallow: /`
+      //   // },
+      // ],
+    ])
 
-      return buildSiteTree(pages, site)
+    return buildSiteTree(pages, site)
 
-      async function buildPageTree({ page, site, isChild = false }) {
-        const { id } = page
-        const { html, modules } = await buildStaticPage({
-          page,
-          site,
-          separateModules: true,
-        })
-        // const formattedHTML = await formatCode(html, 'html')
-        const formattedHTML = html
+    async function buildPageTree({ page, site, isChild = false }) {
+      const { id } = page
+      const { html, modules } = await buildStaticPage({
+        page,
+        site,
+        separateModules: true,
+      })
+      // const formattedHTML = await formatCode(html, 'html')
+      const formattedHTML = html
 
-        return await Promise.all([
-          {
-            path: `${id === 'index' ? `index.html` : `${id}/index.html`}`,
-            content: formattedHTML,
-          },
-          ...modules.map((module) => ({
-            path: `${module.symbol}.js`,
-            content: module.content,
-          })),
-          ...(page.pages
-            ? page.pages.map((subpage) =>
-                buildPageTree({ page: subpage, site, isChild: true })
-              )
-            : []),
-        ])
-      }
-
-      async function buildSiteTree(pages, site) {
-        const json = JSON.stringify(site)
-
-        return [
-          ...flattenDeep(pages),
-          // {
-          //   path: `styles.css`,
-          //   content: styles
-          // },
-          // {
-          //   path: `primo.json`,
-          //   content: json,
-          // },
-          // {
-          //   path: 'README.md',
-          //   content: `# Built with [primo](https://primo.af)`,
-          // },
-        ]
-
-        function getSiteHTML(site) {
-          const symbolHTML = site.symbols
-            .map((symbol) => symbol.value.html)
-            .join(' ')
-          const componentHTML = flattenDeep(
-            site.pages.map((page) =>
-              page.content
-                .filter(
-                  (block) => block.type === 'component' && !block.symbolID
-                )
-                .map((block) => block.value.html)
+      return await Promise.all([
+        {
+          path: `${id === 'index' ? `index.html` : `${id}/index.html`}`,
+          content: formattedHTML,
+        },
+        ...modules.map((module) => ({
+          path: `${module.symbol}.js`,
+          content: module.content,
+        })),
+        ...(page.pages
+          ? page.pages.map((subpage) =>
+              buildPageTree({ page: subpage, site, isChild: true })
             )
-          ).join(' ')
-          return symbolHTML + componentHTML
-        }
-      }
+          : []),
+      ])
     }
 
-    pages = []
+    async function buildSiteTree(pages, site) {
+      const json = JSON.stringify(site)
+
+      return [
+        ...flattenDeep(pages),
+        // {
+        //   path: `styles.css`,
+        //   content: styles
+        // },
+        // {
+        //   path: `primo.json`,
+        //   content: json,
+        // },
+        // {
+        //   path: 'README.md',
+        //   content: `# Built with [primo](https://primo.af)`,
+        // },
+      ]
+
+      function getSiteHTML(site) {
+        const symbolHTML = site.symbols
+          .map((symbol) => symbol.value.html)
+          .join(' ')
+        const componentHTML = flattenDeep(
+          site.pages.map((page) =>
+            page.content
+              .filter((block) => block.type === 'component' && !block.symbolID)
+              .map((block) => block.value.html)
+          )
+        ).join(' ')
+        return symbolHTML + componentHTML
+      }
+    }
   }
 
   let published = false
-  let connectingHost = false
-  let errorMessage = null
 
   let pages = []
-  async function detectDifferences() {
-    // pull in original site and draft
-    // const [oldVersions, newVersions] = [
-    //   await Promise.all(
-    //     $activeSite.pages.map(async (page) => {
-    //       // console.log({ page, $activeSite })
-    //       const html = await buildStaticPage({ page, site: $activeSite })
-    //       return {
-    //         id: page.id,
-    //         html,
-    //         data: page,
-    //       }
-    //     })
-    //   ),
-    //   await Promise.all(
-    //     $site.pages.map(async (page) => {
-    //       const html = await buildStaticPage({ page, site: $site })
-    //       return {
-    //         id: page.id,
-    //         html,
-    //         data: page,
-    //       }
-    //     })
-    //   ),
-    // ]
-    // const deletedPages = oldVersions
-    //   .map((oldVersion) => {
-    //     const newVersion = _.find(newVersions, ['id', oldVersion.id])
-    //     if (!newVersion) {
-    //       return [oldVersion, null]
-    //     }
-    //   })
-    //   .filter(Boolean)
-    // const updatedPages = newVersions
-    //   .map((newVersion) => {
-    //     const oldVersion = _.find(oldVersions, ['id', newVersion.id])
-    //     if (!oldVersion || !_.isEqual(oldVersion, newVersion)) {
-    //       return [oldVersion, newVersion]
-    //     }
-    //   })
-    //   .filter(Boolean)
-    // pages = [...deletedPages, ...updatedPages]
-    // include pages that are not the same as their original source
-  }
-  detectDifferences()
-
-  // save site depolyment in supa
-  // show recent deployments only from project
-  // save site before publish
-  // get latest deployments from vercel *
-  // if connected to host but not published, publish immediately
-  // if connected to host, show Review and Change *
-  // otherwise, show options of connected hosts
-  // if none exists, show prompt to connect new host
-  // once published
 </script>
 
 <ModalHeader icon="fas fa-globe" title="Publish" variants="mb-4" />
@@ -479,53 +206,8 @@
   <div class="publish">
     <div>
       <Hosting />
-      <!-- <div class="boxes">
-        {#each $activeSite.deployments as deployment}
-          <div class="box">
-            <a class="title" href="https://{$hosts.vercel.url}" target="blank">
-              <span>{$hosts.vercel.url}</span>
-              <i class="fas fa-external-link-square-alt" /></a
-            >
-            <span>
-              Last published {timeAgo.format($hosts.vercel.createdAt)}
-            </span>
-            <a
-              target="blank"
-              class="footer-link"
-              href="https://vercel.com/{$hosts.vercel.creator.username}/{$hosts
-                .vercel.name}/settings/domains">Connect Custom Domain</a
-            >
-          </div>
-        {/each}
-      </div> -->
     </div>
     <div>
-      <!-- {#if $hosts}
-        <div class="boxes">
-          <div class="box">
-            {#each $hosts as host}
-              <div class="deployment">
-                {host.type}
-                <button
-                  on:click={() => {
-                    hosts.update((h) => h.filter((h) => h.type !== host.type))
-                  }}>remove</button
-                >
-                <span
-                  >Publishing to <a target="blank" href={host.deployment}
-                    >{host.deployment.domain}</a
-                  >
-                </span>
-                <span
-                  >Last published {timeAgo.format(
-                    host.deployment.createdAt
-                  )}</span
-                >
-              </div>
-            {/each}
-          </div>
-        </div>
-      {/if} -->
       {#if deployment}
         <div class="boxes">
           <div class="box">
@@ -559,7 +241,7 @@
               label="Save and Publish"
               {loading}
             />
-          {:else if $hosts}
+          {:else if $hosts.length > 0}
             <p class="title">Publish Changes</p>
             <PrimaryButton
               on:click={publishToHosts}
@@ -567,45 +249,17 @@
               {loading}
             />
           {:else}
-            <p class="title">Publish your website</p>
+            <p class="title">Download your website</p>
             <p class="subtitle">
-              Your website will be published to your connected web host[s]
+              You can connect a web host to publish your website directly from
+              primo, or download it to publish it manually
             </p>
             <PrimaryButton
-              on:click={publishToHosts}
-              label="Save and Publish"
+              on:click={downloadSite}
+              label="Download your site"
               {loading}
             />
-            <!-- <p class="title">No Changes to Publish</p>
-            <p class="subtitle">
-              Looks like nothing's changed yet. <br />That's too bad.
-            </p> -->
           {/if}
-        </div>
-        <div class="pages">
-          {#each pages as [before, after]}
-            <div class="page">
-              <div>
-                {#if before}
-                  <PageItem page={before.data} displayOnly={true} />
-                {:else}
-                  <div class="empty-state">
-                    <i class="fas fa-lightbulb" />
-                  </div>
-                {/if}
-              </div>
-              <i class="fas fa-arrow-right" />
-              <div>
-                {#if after}
-                  <PageItem page={after.data} displayOnly={true} />
-                {:else}
-                  <div class="empty-state">
-                    <i class="fas fa-trash" />
-                  </div>
-                {/if}
-              </div>
-            </div>
-          {/each}
         </div>
       </header>
     </div>

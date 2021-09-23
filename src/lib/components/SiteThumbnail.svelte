@@ -30,6 +30,8 @@
   }
 </script>
 
+<svelte:window on:resize={resizePreview} />
+
 <div class="iframe-root">
   <div bind:this={container} class="iframe-container">
     {#if !iframeLoaded}

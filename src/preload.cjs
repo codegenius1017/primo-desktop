@@ -23,6 +23,14 @@ contextBridge.exposeInMainWorld('primo', {
     getHosts: () => {
       const hosts = ipcRenderer.sendSync('get-hosts')
       return hosts
+    },
+    setServerConfig: (url) => {
+      const success = ipcRenderer.sendSync('set-server-config', url)
+      return success
+    },
+    getServerConfig: () => {
+      const url = ipcRenderer.sendSync('get-server-config')
+      return url
     }
   },
   data: {

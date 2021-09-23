@@ -6,20 +6,6 @@
   import TextField from '$lib/ui/TextField.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
   import { get, set } from 'idb-keyval'
-  // import { users } from '../../supabase/db'
-  // import { getGithubAuthToken } from '../../supabase/middleware'
-  // import tokens from '../../stores/tokens'
-  // import { unsaved } from '@primo-app/primo/src/stores/app/misc'
-
-  // import en from 'javascript-time-ago/locale/en'
-
-  export let showDetails = true
-  export let type = 'deployments'
-
-  // TimeAgo.addDefaultLocale(en)
-  // const timeAgo = new TimeAgo('en-US')
-
-  // $: if ($router.query.code) finishConnectingOAuth($router.query.code)
 
   async function connectVercel(token) {
     const { data } = await axios
@@ -177,7 +163,12 @@
       </div>
     </div>
   {/if}
-  {#if !showingHosts}
+  {#if !showingHosts && $hosts.length === 0}
+    <PrimaryButton
+      label="Connect a web host"
+      on:click={() => (showingHosts = true)}
+    />
+  {:else if !showingHosts}
     <footer>
       <button class="link" on:click={() => (showingHosts = true)}
         >Connect another host</button
@@ -189,13 +180,6 @@
         <button on:click={() => (hostBeingConnected = 'vercel')}>
           {@html svg('vercel')}</button
         >
-        <button
-          disabled
-          class="github"
-          on:click={() => (hostBeingConnected = 'github')}
-        >
-          {@html svg('github')}
-        </button>
       </div>
     </div>
   {/if}
@@ -365,7 +349,6 @@
   .connecting-host {
     padding: 1rem;
     box-shadow: 0 0 0 1px var(--primo-color-primored);
-    margin-top: 1rem;
     width: 100%;
     --space-y: 0;
 
