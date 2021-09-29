@@ -1,4 +1,5 @@
 import preprocess from 'svelte-preprocess';
+import adapter from '@sveltejs/adapter-static';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,6 +9,10 @@ const config = {
     postcss: true
   }),
 	kit: {
+		adapter: adapter({
+      fallback: 'index.html'
+    }),
+    router: true,
     ssr: false,
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
@@ -19,7 +24,6 @@ const config = {
       },
       build: {
         sourcemap: true,
-        outDir: 'public'
       }
     }
 	}
