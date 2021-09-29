@@ -1,5 +1,6 @@
 <script>
-  import { find } from 'lodash'
+  import { browser } from '$app/env'
+  import { find } from 'lodash-es'
   import Spinner from '$lib/ui/Spinner.svelte'
   // import { downloadPagePreview } from '../supabase/storage'
   import { buildStaticPage } from '@primo-app/primo/src/stores/helpers'
@@ -25,8 +26,11 @@
       site,
     })
   }
-  if (!preview) {
-    getPreview()
+  if (!preview && browser) {
+    setTimeout(() => {
+      // wait for processors to be registered
+      getPreview()
+    }, 100)
   }
 </script>
 

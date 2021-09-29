@@ -2,38 +2,15 @@
   import axios from 'axios'
   import { flattenDeep } from 'lodash-es'
   import TimeAgo from 'javascript-time-ago'
-  import en from 'javascript-time-ago/locale/en'
+  import en from 'javascript-time-ago/locale/en.json'
   import JSZip from 'jszip'
   import { saveAs } from 'file-saver'
-  // import { getGithubAuthToken } from '../../supabase/middleware'
   import Hosting from '$lib/components/Hosting.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
-  import Spinner from '$lib/ui/Spinner.svelte'
-  import { site, modal, savedSite } from '@primo-app/primo'
+  import { site, modal } from '@primo-app/primo'
   import { buildStaticPage } from '@primo-app/primo/src/stores/helpers'
-  import { unsaved } from '@primo-app/primo/src/stores/app/misc'
-  // import { saveSite } from '@primo-app/primo/src/stores/actions'
-  import Preview from '@primo-app/primo/src/components/misc/Preview.svelte'
-  import { makeValidUrl } from '$lib/utils'
-  // import { buildSite, createRepo } from '../../Github.svelte'
   import hosts from '../stores/hosts'
-  import sites from '../stores/sites'
-  // import {
-  //   tokens,
-  //   hosts,
-  //   repo,
-  //   activeSite,
-  //   currentSite,
-  //   user,
-  // } from '../../stores'
-  // import { path } from '../../stores/misc'
-  // import { repos, sites, users } from '../../supabase/db'
-  // import confetti from 'canvas-confetti'
-  // import Hosting from '$lib/components/Hosting.svelte'
   import ModalHeader from '@primo-app/primo/src/views/modal/ModalHeader.svelte'
-  import PageItem from '@primo-app/primo/src/views/modal/PageList/PageItem.svelte'
-  // import TimeAgo from 'javascript-time-ago'
-  // import en from 'javascript-time-ago/locale/en'
   import { page } from '$app/stores'
 
   TimeAgo.addDefaultLocale(en)

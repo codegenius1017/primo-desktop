@@ -3,15 +3,10 @@
 </script>
 
 <script>
-  import { onMount, tick } from 'svelte'
+  import { onMount } from 'svelte'
   import Primo, {
     modal as primoModal,
     createNewSite,
-    site,
-    savedSite,
-    stores,
-    registerProcessors,
-    PrimoFieldTypes,
     fieldTypes,
     modal,
   } from '@primo-app/primo'
@@ -20,13 +15,8 @@
   import cloudSites from '../../stores/cloudSites'
   import activeSite from '../../stores/activeSite'
   import Build from '../../extensions/Build.svelte'
-  import ImageField from '../../extensions/FieldTypes/ImageField.svelte'
   import { page } from '$app/stores'
   import * as actions from '$lib/actions'
-
-  import { html, css } from '../../compiler/processors'
-
-  registerProcessors({ html, css })
 
   primoModal.register([
     {
@@ -63,15 +53,6 @@
     saving = false
   }
 
-  fieldTypes.register([
-    {
-      id: 'image',
-      label: 'Image',
-      component: ImageField,
-    },
-    ...PrimoFieldTypes,
-  ])
-
   let saving = false
 
   let mounted = false
@@ -84,7 +65,6 @@
     // necessary for rollup to load (?)
     setTimeout(() => {
       const site = find(sites, ['id', siteID])
-      console.log({ site })
       if (site) {
         $activeSite = site.data || site
       }
@@ -105,10 +85,6 @@
   {saving}
   on:save={async ({ detail: data }) => saveData(data)}
 />
-
-<span>
-  {$page.path}
-</span>
 
 <style global lang="postcss">
   .primo-reset {

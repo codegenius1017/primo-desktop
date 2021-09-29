@@ -27,9 +27,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 1rem;
     color: var(--color-gray-3);
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 
     .logo {
       width: 8rem;

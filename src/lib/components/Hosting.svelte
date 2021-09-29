@@ -5,7 +5,6 @@
   import hosts from '../../stores/hosts'
   import TextField from '$lib/ui/TextField.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
-  import { get, set } from 'idb-keyval'
 
   async function connectVercel(token) {
     const { data } = await axios
@@ -29,7 +28,6 @@
           },
         ]
       })
-      set('hosts', $hosts)
     } else {
       window.alert('Could not connect to host')
     }
