@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
+const serve = require('electron-serve');
 
 // Live Reload
 require('electron-reload')(__dirname, {
@@ -7,6 +8,7 @@ require('electron-reload')(__dirname, {
   awaitWriteFinish: true
 });
 
+const serveURL = serve({ directory: "build" });
 
 let mainWindow
 const createWindow = () => {
@@ -28,9 +30,8 @@ const createWindow = () => {
   const port = process.env.PORT || 3333
   if (isDev) {
     loadVitePage(port)
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '../public/index.html'));
-  }
+  } else serveURL(mainWindow);
+
 
   // open external links in browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -158,4 +159,24 @@ ipcMain.on('set-server-config', async (event, arg) => {
 
 ipcMain.on('get-server-config', async (event) => {
   event.returnValue = serverConfig
+})
+
+// POSTCSS
+const postcss = require('postcss')
+const nested = require('postcss-nested')
+const autoprefixer = require('autoprefixer')
+ipcMain.handle('process-css', async (event, data) => {
+  const res = await postcss([
+    autoprefixer(),
+    nested()
+  ]).process(data, { from: undefined }).catch(e => {
+    return {
+      error: e.message
+    }
+  })
+  const processed = {
+    css: res.css,
+    error: res.error
+  }
+  return processed
 })

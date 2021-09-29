@@ -45,5 +45,9 @@ contextBridge.exposeInMainWorld('primo', {
       const success = ipcRenderer.sendSync('save-data', data)
       return success
     }
+  },
+  processCSS: async (raw) => {
+    const res = await ipcRenderer.invoke('process-css', raw)
+    return res
   }
 })
