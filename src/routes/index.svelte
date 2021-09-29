@@ -1,20 +1,11 @@
 <script lang="ts">
-  import { browser } from '$app/env'
-  import { goto } from '$app/navigation'
-  import '$lib/assets/reset.css'
   import SignInNav from '$lib/components/SignInNav.svelte'
   import SiteFooter from '$lib/components/SiteFooter.svelte'
   import SiteThumbnail from '$lib/components/SiteThumbnail.svelte'
   import Modal, { show, hide } from '$lib/components/Modal.svelte'
   import sites from '../stores/sites'
   import cloudSites, { connected } from '../stores/cloudSites'
-  // import mixpanel from 'mixpanel-browser'
-  import { html, css } from '../compiler/processors'
-  import { registerProcessors } from '@primo-app/primo'
-
-  browser && registerProcessors({ html, css })
-
-  // mixpanel.track('Dashboard')
+  import config from '../stores/config'
 
   function beginInvitation(site): void {
     // modal.show('INVITATION', { site })
@@ -27,7 +18,7 @@
       props: {
         onSuccess: (site) => {
           $sites = [...$sites, site]
-          goto(site.id)
+          hide()
         },
       },
     })
@@ -50,244 +41,187 @@
   }
 
   let siteBeingEdited
-  function showCollaborators(site) {
-    // modal.show('COLLABORATORS', { site })
-  }
 </script>
 
 <Modal />
 <main class="primo-reset">
   <div class="container">
     <SignInNav />
-    <ul class="sites" xyz="fade stagger stagger-1">
-      {#each $sites as site, i (site.id)}
-        <li class="xyz-in">
-          <a href={site.id} class="site-link">
-            <SiteThumbnail {site} />
-          </a>
-          <div class="site-info">
-            <div class="site-name">
-              {#if siteBeingEdited === site.id}
-                <form on:submit|preventDefault={() => (siteBeingEdited = null)}>
-                  <input
-                    on:blur={() => (siteBeingEdited = null)}
-                    autofocus
-                    class="reset-input"
-                    type="text"
-                    bind:value={site.name}
-                  />
-                </form>
-              {:else}
-                <a href={site.url}>{site.name}</a>
-                <button on:click={() => (siteBeingEdited = site.id)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+    <div class="sites-container">
+      <ul class="sites" xyz="fade stagger stagger-1">
+        {#each $sites as site, i (site.id)}
+          <li class="xyz-in">
+            <a href={site.id} class="site-link">
+              <SiteThumbnail {site} />
+            </a>
+            <div class="site-info">
+              <div class="site-name">
+                {#if siteBeingEdited === site.id}
+                  <form
+                    on:submit|preventDefault={() => (siteBeingEdited = null)}
                   >
-                    <path
-                      d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"
+                    <input
+                      on:blur={() => (siteBeingEdited = null)}
+                      autofocus
+                      class="reset-input"
+                      type="text"
+                      bind:value={site.name}
                     />
-                    <path
-                      fill-rule="evenodd"
-                      d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-              {/if}
-            </div>
-            <span class="site-url">{site.id} </span>
-            <div class="buttons">
-              <div class="button-group">
-                {#if site.collaborators}
-                  <button
-                    class="collaborators"
-                    on:click={() => showCollaborators(site)}
-                  >
+                  </form>
+                {:else}
+                  <a href={site.url}>{site.name}</a>
+                  <button on:click={() => (siteBeingEdited = site.id)}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="w-4 h-full"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
                       <path
-                        d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"
+                        d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"
                       />
-                    </svg>
-                  </button>
-                {/if}
-                <!-- <button on:click={() => beginInvitation(site)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                    />
-                  </svg>
-                  <span>Invite</span>
-                </button> -->
-              </div>
-              <button
-                class="delete-link"
-                on:click={() => deleteSiteItem(site.id)}
-              >
-                <svg
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  ><path
-                    fill-rule="evenodd"
-                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                    clip-rule="evenodd"
-                  /></svg
-                >
-                <span>Delete</span>
-              </button>
-            </div>
-          </div>
-        </li>
-      {/each}
-      <li>
-        <button class="create-site" on:click={createSite}>
-          {#if loading}
-            <!-- <Spinner /> -->
-          {:else}
-            <svg
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              ><path
-                fill-rule="evenodd"
-                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                clip-rule="evenodd"
-              /></svg
-            >
-          {/if}
-          create local site
-        </button>
-      </li>
-    </ul>
-    <hr />
-    <ul class="sites" xyz="fade stagger stagger-1">
-      {#each $cloudSites as site, i (site.id)}
-        <li class="xyz-in">
-          <a href={site.id} class="site-link">
-            <SiteThumbnail site={site.data} />
-          </a>
-          <div class="site-info">
-            <div class="site-name">
-              {#if siteBeingEdited === site.id}
-                <form on:submit|preventDefault={() => (siteBeingEdited = null)}>
-                  <input
-                    on:blur={() => (siteBeingEdited = null)}
-                    autofocus
-                    class="reset-input"
-                    type="text"
-                    bind:value={site.name}
-                  />
-                </form>
-              {:else}
-                <a href={site.url}>{site.name}</a>
-                <button on:click={() => (siteBeingEdited = site.id)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-              {/if}
-            </div>
-            <span class="site-url">{site.id} </span>
-            <div class="buttons">
-              <div class="button-group">
-                {#if site.collaborators}
-                  <button
-                    class="collaborators"
-                    on:click={() => showCollaborators(site)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-4 h-full"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
                       <path
-                        d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"
+                        fill-rule="evenodd"
+                        d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                        clip-rule="evenodd"
                       />
                     </svg>
                   </button>
                 {/if}
-                <!-- <button on:click={() => beginInvitation(site)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                    />
-                  </svg>
-                  <span>Invite</span>
-                </button> -->
               </div>
-              <button
-                class="delete-link"
-                on:click={() => deleteSiteItem(site.id)}
-              >
-                <svg
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  ><path
-                    fill-rule="evenodd"
-                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                    clip-rule="evenodd"
-                  /></svg
+              <span class="site-url">{site.id} </span>
+              <div class="buttons">
+                <button
+                  class="delete-link"
+                  on:click={() => deleteSiteItem(site.id)}
                 >
-                <span>Delete</span>
-              </button>
+                  <svg
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      fill-rule="evenodd"
+                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                      clip-rule="evenodd"
+                    /></svg
+                  >
+                  <span>Delete</span>
+                </button>
+              </div>
             </div>
-          </div>
-        </li>
-      {/each}
-      {#if !$connected}
+          </li>
+        {/each}
         <li>
-          <button class="create-site" on:click={connectToServer}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z"
-              />
-            </svg>
-            <span>connect to primo server</span>
+          <button class="create-site" on:click={createSite}>
+            {#if loading}
+              <!-- <Spinner /> -->
+            {:else}
+              <svg
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+                ><path
+                  fill-rule="evenodd"
+                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                  clip-rule="evenodd"
+                /></svg
+              >
+            {/if}
+            create local site
           </button>
         </li>
-      {/if}
-    </ul>
+      </ul>
+    </div>
+    {#if $cloudSites.length > 0}
+      <hr />
+      <div class="sites-container">
+        <header>
+          <h2>Primo Server</h2>
+          <a target="blank" rel="external" href={$config.serverConfig.url}
+            >{$config.serverConfig.url}</a
+          >
+        </header>
+        <ul class="sites" xyz="fade stagger stagger-1">
+          {#each $cloudSites as site, i (site.id)}
+            <li class="xyz-in">
+              <a href={site.id} class="site-link">
+                <SiteThumbnail site={site.data} />
+              </a>
+              <div class="site-info">
+                <div class="site-name">
+                  {#if siteBeingEdited === site.id}
+                    <form
+                      on:submit|preventDefault={() => (siteBeingEdited = null)}
+                    >
+                      <input
+                        on:blur={() => (siteBeingEdited = null)}
+                        autofocus
+                        class="reset-input"
+                        type="text"
+                        bind:value={site.name}
+                      />
+                    </form>
+                  {:else}
+                    <a href={site.url}>{site.name}</a>
+                    <button on:click={() => (siteBeingEdited = site.id)}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"
+                        />
+                        <path
+                          fill-rule="evenodd"
+                          d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  {/if}
+                </div>
+                <span class="site-url">{site.id} </span>
+                <div class="buttons">
+                  <button
+                    class="delete-link"
+                    on:click={() => deleteSiteItem(site.id)}
+                  >
+                    <svg
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                      ><path
+                        fill-rule="evenodd"
+                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                        clip-rule="evenodd"
+                      /></svg
+                    >
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </div>
+            </li>
+          {/each}
+          {#if !$connected}
+            <li>
+              <button class="create-site" on:click={connectToServer}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z"
+                  />
+                </svg>
+                <span>connect to primo server</span>
+              </button>
+            </li>
+          {/if}
+        </ul>
+      </div>
+    {/if}
     <SiteFooter />
   </div>
 </main>
@@ -304,107 +238,122 @@
     }
 
     hr {
+      margin: 2rem 0;
       border-color: var(--color-gray-9);
     }
 
-    ul.sites {
-      padding: 1rem;
-      margin: 1rem 0;
+    .sites-container {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
       gap: 1rem;
 
-      li {
-        background: var(--color-gray-9);
-        border-radius: var(--primo-border-radius);
-        overflow: hidden;
-        font-size: var(--font-size-4);
-        box-shadow: var(--box-shadow-md);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-
-        .site-link {
-          transition: opacity 0.1s;
-
-          &:hover {
-            opacity: 0.75;
-          }
+      header {
+        h2 {
+          color: white;
         }
-
-        .site-info {
-          color: var(--color-gray-1);
-          padding: 1.5rem;
-          display: flex;
-          flex-direction: column;
-
-          .site-name {
-            display: flex;
-            align-items: center;
-
-            a,
-            input {
-              text-align: left;
-              font-size: var(--font-size-4);
-              font-weight: 600;
-            }
-
-            button {
-              border-radius: var(--primo-border-radius);
-              padding: 0 0.5rem;
-
-              &:hover {
-                color: var(--primo-color-primored);
-              }
-
-              svg {
-                width: 1rem;
-                height: 1rem;
-              }
-            }
-          }
-
-          .site-url {
-            margin-bottom: 0.5rem;
-            font-size: var(--font-size-1);
-            color: var(--color-gray-4);
-          }
-
-          .buttons {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: var(--color-gray-3);
-            margin-top: 0.5rem;
-
-            .button-group {
-              margin-right: 0.5rem;
-            }
-          }
+        a {
+          text-decoration: underline;
+          color: var(--color-gray-4);
         }
       }
 
-      button.create-site {
-        padding: 3rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        background: var(--primo-color-black);
-        font-weight: 600;
-        color: var(--color-gray-2);
-        border-radius: var(--primo-border-radius);
-        border: 2px solid var(--primo-color-primored);
+      ul.sites {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 1rem;
 
-        svg {
-          height: 2rem;
-          width: 2rem;
+        li {
+          background: var(--color-gray-9);
+          border-radius: var(--primo-border-radius);
+          overflow: hidden;
+          font-size: var(--font-size-4);
+          box-shadow: var(--box-shadow-md);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+
+          .site-link {
+            transition: opacity 0.1s;
+
+            &:hover {
+              opacity: 0.75;
+            }
+          }
+
+          .site-info {
+            color: var(--color-gray-1);
+            padding: 1.5rem;
+            gap: 0.25rem;
+            display: flex;
+            flex-direction: column;
+
+            .site-name {
+              display: flex;
+              align-items: center;
+
+              a,
+              input {
+                text-align: left;
+                font-size: var(--font-size-4);
+                font-weight: 600;
+              }
+
+              button {
+                border-radius: var(--primo-border-radius);
+                padding: 0 0.5rem;
+
+                &:hover {
+                  color: var(--primo-color-primored);
+                }
+
+                svg {
+                  width: 1rem;
+                  height: 1rem;
+                }
+              }
+            }
+
+            .site-url {
+              margin-bottom: 0.5rem;
+              font-size: var(--font-size-1);
+              color: var(--color-gray-4);
+            }
+
+            .buttons {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              color: var(--color-gray-3);
+              margin-top: 0.5rem;
+
+              .button-group {
+                margin-right: 0.5rem;
+              }
+            }
+          }
         }
 
-        &:hover {
-          background: var(--primo-color-primored);
+        button.create-site {
+          padding: 3rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background: var(--primo-color-black);
+          font-weight: 600;
+          color: var(--color-gray-2);
+          border-radius: var(--primo-border-radius);
+          border: 2px solid var(--primo-color-primored);
+
+          svg {
+            height: 2rem;
+            width: 2rem;
+          }
+
+          &:hover {
+            background: var(--primo-color-primored);
+          }
         }
       }
     }
@@ -511,6 +460,14 @@
     main {
       ul.sites {
         grid-template-columns: auto;
+      }
+    }
+  }
+
+  @media (max-width: 900px) {
+    main {
+      ul.sites {
+        grid-template-columns: 1fr 1fr;
       }
     }
   }
