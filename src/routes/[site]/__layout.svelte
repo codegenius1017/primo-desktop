@@ -72,13 +72,6 @@
   }
 </script>
 
-<svelte:head>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap"
-    rel="stylesheet"
-  />
-</svelte:head>
-
 <Primo
   {data}
   {role}

@@ -37,30 +37,6 @@
     .toolbar {
       display: flex;
 
-      button.settings {
-        color: var(--color-gray-6);
-        font-size: var(--font-size-1);
-        margin-right: 1rem;
-
-        img,
-        svg {
-          width: 1.5rem;
-          height: 1.5rem;
-          border-radius: 100%;
-          object-fit: cover;
-          border: 2px solid transparent;
-        }
-
-        svg:focus,
-        img:focus {
-          border-color: var(--color-primored);
-        }
-
-        &:hover {
-          color: var(--color-primored);
-        }
-      }
-
       button.sign-out {
         font-size: var(--font-size-1);
         font-weight: 600;

@@ -456,18 +456,18 @@
     }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
     main {
       ul.sites {
-        grid-template-columns: auto;
+        grid-template-columns: 1fr 1fr !important;
       }
     }
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 600px) {
     main {
       ul.sites {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: auto !important;
       }
     }
   }

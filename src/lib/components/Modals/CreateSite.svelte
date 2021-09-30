@@ -173,55 +173,6 @@
           font-size: var(--font-size-2);
         }
       }
-
-      ul {
-        display: grid;
-        grid-template-columns: auto auto;
-        gap: 1rem;
-
-        li {
-          display: flex;
-          flex-direction: column;
-          position: relative;
-          overflow: hidden;
-          border-radius: var(--primo-border-radius);
-
-          &:hover {
-            opacity: 0.9;
-          }
-
-          button {
-            width: 100%;
-            position: absolute;
-            background: var(--color-gray-8);
-            transition: background 0.1s;
-
-            span {
-              display: block;
-              padding: 0.25rem;
-            }
-
-            &:after {
-              content: '';
-              width: 100%;
-              height: 100vh;
-              display: block;
-              background: transparent;
-            }
-
-            &:focus {
-              outline: 0;
-            }
-          }
-          button.selected {
-            background: var(--color-primored);
-          }
-
-          .thumbnail-container {
-            margin-top: 2rem;
-          }
-        }
-      }
     }
   }
   #advanced-options {
