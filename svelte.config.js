@@ -13,11 +13,14 @@ const config = {
       fallback: 'index.html'
     }),
     router: true,
-    ssr: false,
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
     vite: {
       server: {
+        fs: {
+          // throws an error without this when importing Fira font
+          allow: ['..', 'node_modules/@fontsource/fira-code']
+        },
         force: true,
         open: false, // do not open the browser as we use electron
         port: process.env.PORT || 3333,
