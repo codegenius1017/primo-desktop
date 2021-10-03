@@ -1,18 +1,7 @@
 import * as idb from 'idb-keyval';
 import _ from 'lodash'
-import {get} from 'svelte/store'
 import PromiseWorker from 'promise-worker';
 import svelteWorker from './workers/worker?worker'
-// import {downloadSiteImage} from '../supabase/storage' 
-// import {convertBlobToBase64} from '../utils'
-import {site} from '@primo-app/primo/src/stores/data/draft'
-import activePage from '@primo-app/primo/src/stores/app/activePage'
-
-// const postCSSWorker = new Worker('/processors/postcss.worker.js');
-// const cssPromiseWorker = new PromiseWorker(postCSSWorker);
-
-// const handlebarsWorker = new Worker('/processors/handlebars.worker.js');
-// const htmlPromiseWorker = new PromiseWorker(handlebarsWorker);
 
 const SvelteWorker = new svelteWorker()
 const htmlPromiseWorker = new PromiseWorker(SvelteWorker);
@@ -114,89 +103,19 @@ export async function html({ code, data, buildStatic = true, format = 'esm'}) {
       format
     }
   }
-
-  async function replaceImagesWithBase64(data) {
-    // Modify final request by replacing all img url's beginning with 'primo:' - 
-    // Download file from supabase, then convert to Base64 and replace url value
-    // let finalRequest = buildFinalRequest()
-    const modifiedData = _.cloneDeep(data)
-    await Promise.all(
-      Object.entries(data).map(async field => {
-        const [ key, val ] = field
-        if (val.url && val.url.startsWith('primo:')) { // Image type
-          const b64 = await fetchAndConvert(val.url)
-          modifiedData[key] = {
-            ...modifiedData[key],
-            url: b64,
-            src: b64
-          }
-        } else if (typeof val === 'object' && !Array.isArray(val) && key !== 'page' && key !== 'site') { // Group type
-          await Promise.all(
-            Object.entries(val).map(async subfield => {
-              const [ subfieldKey, subfieldVal ] = subfield
-              if (subfieldVal && subfieldVal.url && subfieldVal.url.startsWith('primo:')) { // Image type
-                const b64 = await fetchAndConvert(subfieldVal.url)
-                modifiedData[key] = {
-                  ...modifiedData[key],
-                  [subfieldKey]: {
-                    ...subfieldVal,
-                    url: b64,
-                    src: b64
-                  }
-                }
-              }
-            })
-          )
-        } else if (Array.isArray(val)) { // Repeater type
-          let newRepeaters = []
-          await Promise.all(
-            val.map(async subfield => {
-              await Promise.all(
-                Object.entries(subfield).map(async repeaterItem => {
-                  const [ repeaterKey, repeaterVal ] = repeaterItem
-                  if (repeaterVal.url && repeaterVal.url.startsWith('primo:')) { // Image type
-                    const b64 = await fetchAndConvert(repeaterVal.url)
-                    subfield = {
-                      ...subfield,
-                      [repeaterKey]: {
-                        ...repeaterVal,
-                        url: b64,
-                        src: b64
-                      }
-                    }
-                  }
-                })
-              )
-              newRepeaters = [
-                ...newRepeaters,
-                subfield
-              ]
-            })
-          )
-          modifiedData[key] = newRepeaters
-        }
-      })
-    )
-    return modifiedData
-  }
-
-  async function fetchAndConvert(url) {
-    // const imageKey = url.slice(12) // remove primo:sites/
-    // const cached = await idb.get(imageKey)
-    // if (cached) return cached
-    // const blob = await downloadSiteImage(imageKey)
-    // if (blob) {
-    //   const b64 = await convertBlobToBase64(blob)
-    //   await idb.set(imageKey, b64)
-    //   return b64
-    // } else {
-    //   return ''
-    // }
-  }
-
 }
 
 
 export async function css(raw, options = {}) {
-  return raw
+  if (!raw) {
+    return ''
+  }
+  // const cached = await idb.get(raw)
+  // if (cached) {
+  //   return cached
+  // }
+  const { css, error } = await window.primo.processCSS(raw)
+  
+  // await idb.set(raw, css || error)
+  return { css, error }
 }

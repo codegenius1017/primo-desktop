@@ -2,10 +2,6 @@ import PromiseWorker from 'promise-worker';
 import {rollup} from "../lib/rollup-browser";
 import registerPromiseWorker from 'promise-worker/register'
 import * as svelte from 'svelte/compiler'
-import postCSSWorker from './postcss.worker?worker'
-const PostCSSWorker = new postCSSWorker
-// const postCSSWorker = new Worker('/processors/postcss.worker.js');
-const cssPromiseWorker = new PromiseWorker(PostCSSWorker);
 
 const CDN_URL = "https://cdn.jsdelivr.net/npm";
 
@@ -160,20 +156,7 @@ registerPromiseWorker(async function ({code,data,hydrated,buildStatic = true, fo
                         //@ts-ignore
                         if (/.*\.svelte/.test(id)) {
                             try {
-                                let processed
-                                try {
-                                    processed = (await svelte.preprocess(code, {
-                                        style: async ({ content }) => ({
-                                            code: await cssPromiseWorker.postMessage({
-                                                css: content
-                                            })
-                                        })
-                                    })).code;
-                                } catch(e) {
-                                    final.error = 'CSS error'
-                                    return ''
-                                }
-                                const res = svelte.compile(processed, svelteOptions)
+                                const res = svelte.compile(code, svelteOptions)
                                 const warnings = res.warnings.filter(w => !w.message.startsWith(`Component has unused export`)).filter(w => !w.message.startsWith(`A11y: <img> element should have an alt attribute`))
                                 if (warnings[0]) {
                                     final.error = warnings[0].toString()
