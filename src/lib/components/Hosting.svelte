@@ -84,14 +84,7 @@
       <div class="user">
         {@html svg(host.type)}
       </div>
-      <div class="host-user">
-        <span class="sr-only">Go to host</span>
-        <img
-          src="https://vercel.com/api/www/avatar/{host.user.avatar}?s=256"
-          alt="Hosting account avatar"
-        />
-      </div></a
-    >
+    </a>
   {/each}
   {#if hostBeingConnected === 'vercel'}
     <div class="box connecting-host">
