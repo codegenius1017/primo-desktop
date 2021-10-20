@@ -1,6 +1,6 @@
 <script>
   import axios from 'axios'
-  import { flattenDeep } from 'lodash-es'
+  import { flattenDeep, uniqBy } from 'lodash-es'
   import TimeAgo from 'javascript-time-ago'
   import en from 'javascript-time-ago/locale/en.json'
   import JSZip from 'jszip'
@@ -39,10 +39,13 @@
     loading = true
 
     // const name = window.location.pathname.split('/')[2]
-    const files = (await buildSiteBundle($site, siteID)).map((file) => ({
-      file: file.path,
-      data: file.content,
-    }))
+    const files = (await buildSiteBundle($site, siteID)).map((file) => {
+      return {
+        file: file.path,
+        data: file.content,
+      }
+    })
+    const uniqueFiles = uniqBy(files, 'file') // modules are duplicated
 
     await Promise.allSettled(
       $hosts.map(async ({ token, type }) => {
@@ -52,7 +55,7 @@
               'https://api.vercel.com/v12/now/deployments',
               {
                 name: siteID,
-                files,
+                files: uniqueFiles,
                 projectSettings: {
                   framework: null,
                 },
@@ -126,7 +129,7 @@
           content: formattedHTML,
         },
         ...modules.map((module) => ({
-          path: `${module.symbol}.js`,
+          path: `_modules/${module.symbol}.js`,
           content: module.content,
         })),
         ...(page.pages
