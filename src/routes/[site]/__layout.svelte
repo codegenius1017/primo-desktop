@@ -4,11 +4,13 @@
 
 <script>
   import { onMount } from 'svelte'
+  import { get } from 'svelte/store'
   import Primo, {
     modal as primoModal,
     createNewSite,
     fieldTypes,
     modal,
+    stores,
   } from '@primo-app/primo'
   import { find } from 'lodash-es'
   import sites from '../../stores/sites'
@@ -46,8 +48,13 @@
         if (site.id !== siteID) return site
         return updatedSite
       })
+      stores.saved.set(true)
     } else {
-      await actions.cloudSites.save(updatedSite)
+      const success = await actions.cloudSites.save(updatedSite)
+      stores.saved.set(success)
+      if (!get(stores.saved)) {
+        window.alert('Could not save site. See console for details.')
+      }
     }
 
     saving = false

@@ -5,7 +5,18 @@ import config from '../stores/config'
 export const cloudSites = {
   save: async (site) => {
     const {serverConfig} = get(config)
-    const res = await axios.post(`${serverConfig.url}/api/${site.id}.json?token=${serverConfig.token}`, { site })
-    console.log({res})
+    let successful = false
+    try {
+      const res = await axios.post(`${serverConfig.url}/api/${site.id}`, { 
+        site,
+        token: serverConfig.token
+      })
+      if (res.data === 'ok') {
+        successful = true
+      }
+    } catch(e) {
+      console.warn(e)
+    }
+    return successful
   }
 }
