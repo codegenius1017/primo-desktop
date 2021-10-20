@@ -9,7 +9,7 @@ All your sites get saved as .json files. You can set the directory they get save
 ## Running 
 
 1. `npm run install`
-1. `npm run dev`
+1. `npm run start`
 
 ## Building 
 
