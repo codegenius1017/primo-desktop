@@ -32,8 +32,6 @@
     modal.hide()
   }
 
-  $: console.log($hosts)
-
   let deployment
   async function publishToHosts() {
     loading = true

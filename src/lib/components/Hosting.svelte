@@ -162,7 +162,7 @@
   {:else if !showingHosts}
     <footer>
       <button class="link" on:click={() => (showingHosts = true)}
-        >Connect another host</button
+        >Connect a host</button
       >
     </footer>
   {:else if showingHosts && !hostBeingConnected}
