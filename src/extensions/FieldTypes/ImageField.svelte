@@ -1,13 +1,8 @@
 <script>
-  import axios from 'axios'
   import { createEventDispatcher } from 'svelte'
   const dispatch = createEventDispatcher()
-  // import { Spinner } from '../../@components/misc'
-  // import Compressor from 'compressorjs'
-  // import { uploadSiteImage, downloadSiteImage } from '../../supabase/storage'
-  // import imageCompression from 'browser-image-compression'
-  // import { user, currentSite } from '../../stores'
-  // import { convertBlobToBase64 } from '../../utils'
+  import imageCompression from 'browser-image-compression'
+  import svgToMiniDataURI from 'mini-svg-data-uri'
 
   const defaultValue = {
     alt: '',
@@ -33,40 +28,39 @@
     }
   }
 
+  async function convertBlobToBase64(blob) {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(reader.result)
+      reader.readAsDataURL(blob)
+    })
+  }
+
   async function encodeImageFileAsURL({ target }) {
     loading = true
     const { files } = target
     if (files.length > 0) {
       const file = files[0]
 
-      if (file.type === 'image/svg+xml' && file.size / 1000 <= 250) {
-        // SVGs smaller than 250kb get saved directly
-        // const imageKey = await uploadSiteImage({
-        //   owner: $user.uid,
-        //   id: $currentSite,
-        //   file,
-        // })
-        // const primoImageKey = `primo:${imageKey}`
-        // const dataUri = await convertSvgToDataUri(file)
-        // imagePreview = dataUri
-        // setValue({ url: primoImageKey, size: Math.round(file.size / 1000) })
+      let dataUri
+      let size
+      if (file.type === 'image/svg+xml') {
+        const contents = await file.text()
+        dataUri = svgToMiniDataURI(contents)
+        size = new Blob([file]).size
       } else {
-        // const compressed = await imageCompression(file, {
-        //   maxSizeMB: 0.25, // (default: Number.POSITIVE_INFINITY)
-        // })
-        // const imageKey = await uploadSiteImage({
-        //   owner: $user.uid,
-        //   id: $currentSite,
-        //   file: compressed,
-        // })
-        // const primoImageKey = `primo:${imageKey}`
-        // const b64 = await convertBlobToBase64(compressed)
-        // imagePreview = b64
-        // setValue({
-        //   url: primoImageKey,
-        //   size: Math.round(compressed.size / 1000),
-        // })
+        const compressed = await imageCompression(file, {
+          maxSizeMB: 0.25,
+        })
+        dataUri = await convertBlobToBase64(compressed)
+        size = new Blob([compressed]).size
       }
+
+      imagePreview = dataUri
+      setValue({
+        url: dataUri,
+        size: Math.round(size / 1000),
+      })
 
       loading = false
       dispatch('input')
