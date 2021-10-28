@@ -14,5 +14,5 @@ All your sites get saved as .json files. You can set the directory they get save
 ## Building 
 
 1. `npm run build`
-1. `npm run make`
-1. Find binary in `out` directory
+1. `npm run make` for Mac (binary at `out/primo-darwin-x64/primo.app`)
+1. `npm run make-windows` for Windows (binary at `primo-win32-x64/primo.exe`)
