@@ -41,10 +41,14 @@
   let loading = false
   async function connectToServer() {
     loading = true
-    const endpoint = `${serverConfig.url}/api.json?token=${serverConfig.token}`
+    const endpoint = `${serverConfig.url}/api.json`
     let data
     try {
-      const res = await axios.get(endpoint)
+      const res = await axios.get(endpoint, {
+        headers: {
+          Authorization: `Basic ${serverConfig.token}`,
+        },
+      })
       data = res.data.success
     } catch (e) {
       console.error(e)

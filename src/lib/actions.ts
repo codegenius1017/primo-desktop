@@ -10,6 +10,10 @@ export const cloudSites = {
       const res = await axios.post(`${serverConfig.url}/api/${site.id}`, { 
         site,
         token: serverConfig.token
+      }, {
+        headers: {
+          Authorization: `Basic ${serverConfig.token}`,
+        },
       })
       if (res.data === 'ok') {
         successful = true
