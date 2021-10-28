@@ -131,7 +131,7 @@
         </li>
       </ul>
     </div>
-    {#if $cloudSites.length > 0}
+    {#if $cloudSites}
       <hr />
       <div class="sites-container">
         <header>
@@ -201,6 +201,11 @@
                 </div>
               </div>
             </li>
+          {:else}
+            <span class="info"
+              >When you create sites on {$config.serverConfig.url} they will appear
+              here</span
+            >
           {/each}
           {#if !$connected}
             <li>
@@ -245,6 +250,12 @@
     .sites-container {
       display: grid;
       gap: 1rem;
+
+      span.info {
+        padding: 1rem;
+        color: white;
+        background: var(--color-gray-9);
+      }
 
       header {
         h2 {
