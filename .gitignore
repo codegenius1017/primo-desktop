@@ -12,6 +12,8 @@ app/app.nw
 Icon?
 /**/report.*.json
 
+primo-win32-x64
+
 # Logs
 logs
 *.log
