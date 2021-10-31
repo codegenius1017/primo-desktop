@@ -55,22 +55,30 @@
               <SiteThumbnail {site} />
             </a>
             <div class="site-info">
-              <div class="site-name">
-                {#if siteBeingEdited === site.id}
-                  <form
-                    on:submit|preventDefault={() => (siteBeingEdited = null)}
+              <div>
+                <div class="site-name">
+                  {#if siteBeingEdited === site.id}
+                    <form
+                      on:submit|preventDefault={() => (siteBeingEdited = null)}
+                    >
+                      <input
+                        on:blur={() => (siteBeingEdited = null)}
+                        autofocus
+                        class="reset-input"
+                        type="text"
+                        bind:value={site.name}
+                      />
+                    </form>
+                  {:else}
+                    <a href={site.url}>{site.name}</a>
+                  {/if}
+                </div>
+                <span class="site-url">{site.id} </span>
+                <div class="buttons">
+                  <button
+                    class="delete-link"
+                    on:click={() => (siteBeingEdited = site.id)}
                   >
-                    <input
-                      on:blur={() => (siteBeingEdited = null)}
-                      autofocus
-                      class="reset-input"
-                      type="text"
-                      bind:value={site.name}
-                    />
-                  </form>
-                {:else}
-                  <a href={site.url}>{site.name}</a>
-                  <button on:click={() => (siteBeingEdited = site.id)}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
@@ -85,28 +93,39 @@
                         clip-rule="evenodd"
                       />
                     </svg>
+                    <span>Rename</span>
                   </button>
-                {/if}
-              </div>
-              <span class="site-url">{site.id} </span>
-              <div class="buttons">
-                <button
-                  class="delete-link"
-                  on:click={() => deleteSiteItem(site.id)}
-                >
-                  <svg
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    ><path
-                      fill-rule="evenodd"
-                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                      clip-rule="evenodd"
-                    /></svg
+                  <button
+                    class="delete-link"
+                    on:click={() => deleteSiteItem(site.id)}
                   >
-                  <span>Delete</span>
-                </button>
+                    <svg
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                      ><path
+                        fill-rule="evenodd"
+                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                        clip-rule="evenodd"
+                      /></svg
+                    >
+                    <span>Delete</span>
+                  </button>
+                </div>
               </div>
+              <a href={site.id} class="arrow" aria-label="Go to site">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg></a
+              >
             </div>
           </li>
         {/each}
@@ -126,7 +145,7 @@
                 /></svg
               >
             {/if}
-            create local site
+            create a site
           </button>
         </li>
       </ul>
@@ -283,6 +302,7 @@
           justify-content: flex-start;
 
           .site-link {
+            background: var(--color-gray-8);
             transition: opacity 0.1s;
 
             &:hover {
@@ -292,14 +312,28 @@
 
           .site-info {
             color: var(--color-gray-1);
-            padding: 1.5rem;
-            gap: 0.25rem;
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+
+            & > div {
+              display: flex;
+              flex-direction: column;
+              justify-content: start;
+              padding: 1.5rem;
+            }
+
+            & > a {
+              flex: 1;
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              padding: 1.5rem;
+            }
 
             .site-name {
+              grid-column: 1;
               display: flex;
-              align-items: center;
 
               a,
               input {
@@ -324,20 +358,41 @@
             }
 
             .site-url {
+              grid-column: 1;
               margin-bottom: 0.5rem;
               font-size: var(--font-size-1);
               color: var(--color-gray-4);
             }
 
             .buttons {
+              grid-column: 1;
               display: flex;
               align-items: center;
-              justify-content: space-between;
               color: var(--color-gray-3);
               margin-top: 0.5rem;
 
+              button {
+                margin-right: 0.75rem;
+              }
+
               .button-group {
                 margin-right: 0.5rem;
+              }
+            }
+
+            a.arrow {
+              grid-column: 2;
+
+              svg {
+                height: 2rem;
+                width: 2rem;
+              }
+
+              &:hover {
+                svg {
+                  color: var(--primo-color-primored);
+                  transform: translateX(5px);
+                }
               }
             }
           }
@@ -358,12 +413,16 @@
           border: 2px solid var(--primo-color-primored);
 
           svg {
+            border-radius: 50%;
+            transition: background 0.1s;
             height: 2rem;
             width: 2rem;
           }
 
           &:hover {
-            background: var(--primo-color-primored);
+            svg {
+              background: var(--primo-color-primored);
+            }
           }
         }
       }
@@ -467,7 +526,7 @@
     }
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 600px) {
     main {
       ul.sites {
         grid-template-columns: 1fr 1fr !important;
@@ -475,7 +534,7 @@
     }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 400px) {
     main {
       ul.sites {
         grid-template-columns: auto !important;
