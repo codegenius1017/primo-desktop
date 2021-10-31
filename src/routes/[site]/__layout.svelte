@@ -67,7 +67,8 @@
 
   $: siteID = $page.params.site
   $: data = $activeSite || createNewSite({ id: 'test', name: 'Test' })
-  $: mounted && setActiveSite(siteID, [...$sites, ...$cloudSites])
+  $: mounted &&
+    setActiveSite(siteID, $cloudSites ? [...$sites, ...$cloudSites] : $sites)
   async function setActiveSite(siteID, sites) {
     // necessary for rollup to load (?)
     setTimeout(() => {
