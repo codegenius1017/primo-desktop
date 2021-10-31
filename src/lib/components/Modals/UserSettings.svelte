@@ -107,7 +107,9 @@
         >
       </form>
     {:else if activeTab.label === 'Advanced'}
-      <h1 class="primo-heading-lg">Advanced</h1>
+      <h1 class="primo-heading-lg">
+        Advanced <span>Set the directory you'll be saving your sites to.</span>
+      </h1>
       <div>
         <h2>Local Save Directory</h2>
         <span>{$config.saveDir}</span>
