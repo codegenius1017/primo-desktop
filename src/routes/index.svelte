@@ -7,10 +7,6 @@
   import cloudSites, { connected } from '../stores/cloudSites'
   import config from '../stores/config'
 
-  function beginInvitation(site): void {
-    // modal.show('INVITATION', { site })
-  }
-
   let loading
   function createSite() {
     show({
@@ -41,6 +37,8 @@
   }
 
   let siteBeingEdited
+
+  let hoveredItem = null
 </script>
 
 <Modal />
@@ -50,10 +48,14 @@
     <div class="sites-container">
       <ul class="sites" xyz="fade stagger stagger-1">
         {#each $sites as site, i (site.id)}
-          <li class="xyz-in">
-            <a href={site.id} class="site-link">
+          <li
+            class="xyz-in"
+            class:active={hoveredItem === i}
+            class:inactive={hoveredItem !== null && hoveredItem !== i}
+          >
+            <div class="site-link">
               <SiteThumbnail {site} />
-            </a>
+            </div>
             <div class="site-info">
               <div>
                 <div class="site-name">
@@ -70,7 +72,25 @@
                       />
                     </form>
                   {:else}
-                    <a href={site.url}>{site.name}</a>
+                    <a
+                      href={site.id}
+                      on:mouseenter={() => (hoveredItem = i)}
+                      on:mouseleave={() => (hoveredItem = null)}
+                    >
+                      <span>{site.name}</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        class="s-Uap-jPRb-uiE"
+                        ><path
+                          fill-rule="evenodd"
+                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                          clip-rule="evenodd"
+                          class="s-Uap-jPRb-uiE"
+                        /></svg
+                      >
+                    </a>
                   {/if}
                 </div>
                 <span class="site-url">{site.id} </span>
@@ -113,23 +133,15 @@
                   </button>
                 </div>
               </div>
-              <a href={site.id} class="arrow" aria-label="Go to site">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clip-rule="evenodd"
-                  />
-                </svg></a
-              >
             </div>
           </li>
         {/each}
-        <li>
+        <li
+          class:inactive={hoveredItem !== true && hoveredItem !== null}
+          class:active={hoveredItem === true}
+          on:mouseenter={() => (hoveredItem = true)}
+          on:mouseleave={() => (hoveredItem = null)}
+        >
           <button class="create-site" on:click={createSite}>
             {#if loading}
               <!-- <Spinner /> -->
@@ -300,20 +312,24 @@
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
+          transition: opacity 0.1s, filter 0.1s;
+
+          &.active {
+            filter: brightness(1.1);
+          }
+
+          &.inactive {
+            opacity: 0.5;
+          }
 
           .site-link {
             background: var(--color-gray-8);
             transition: opacity 0.1s;
-
-            &:hover {
-              opacity: 0.75;
-            }
           }
 
           .site-info {
             color: var(--color-gray-1);
             display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 0.5rem;
 
             & > div {
@@ -332,8 +348,20 @@
             }
 
             .site-name {
-              grid-column: 1;
               display: flex;
+
+              a {
+                display: flex;
+
+                &:hover {
+                  color: var(--primo-color-primored);
+                }
+
+                svg {
+                  width: 1.5rem;
+                  margin-top: 3px;
+                }
+              }
 
               a,
               input {
