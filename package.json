@@ -55,6 +55,7 @@
     "idb-keyval": "^6.0.2",
     "install": "^0.13.0",
     "javascript-time-ago": "^2.3.8",
+    "js-beautify": "^1.14.0",
     "jszip": "^3.7.1",
     "lodash-es": "^4.17.21",
     "mini-svg-data-uri": "^1.4.3",
