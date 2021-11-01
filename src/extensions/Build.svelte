@@ -5,6 +5,7 @@
   import en from 'javascript-time-ago/locale/en.json'
   import JSZip from 'jszip'
   import { saveAs } from 'file-saver'
+  import { html as beautifyHTML } from 'js-beautify'
   import Hosting from '$lib/components/Hosting.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
   import { site, modal } from '@primo-app/primo'
@@ -94,6 +95,10 @@
 
     const pages = await Promise.all([
       ...site.pages.map((page) => buildPageTree({ page, site })),
+      {
+        path: `primo.json`,
+        content: JSON.stringify(site),
+      },
       // [
       //   {
       //     path: `primo/index.html`,
@@ -118,8 +123,7 @@
         site,
         separateModules: true,
       })
-      // const formattedHTML = await formatCode(html, 'html')
-      const formattedHTML = html
+      const formattedHTML = await beautifyHTML(html)
 
       return await Promise.all([
         {
