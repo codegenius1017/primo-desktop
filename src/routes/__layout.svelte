@@ -2,7 +2,9 @@
   import '$lib/assets/reset.css'
   import { browser } from '$app/env'
   import ImageField from '../extensions/FieldTypes/ImageField.svelte'
+  import SiteButtons from '$lib/components/SiteButtons.svelte'
   import {
+    dropdown,
     registerProcessors,
     fieldTypes,
     PrimoFieldTypes,
@@ -21,6 +23,17 @@
       component: ImageField,
     },
     ...PrimoFieldTypes,
+  ])
+
+  dropdown.set([
+    {
+      label: 'Back to Dashboard',
+      icon: 'fas fa-arrow-left',
+      href: '/',
+    },
+    {
+      component: SiteButtons,
+    },
   ])
 </script>
 
