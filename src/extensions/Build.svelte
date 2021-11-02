@@ -328,13 +328,8 @@
 
     .publish {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 1rem;
       place-items: flex-start normal;
-
-      @media screen and (max-width: 900px) {
-        grid-template-columns: auto;
-      }
 
       .boxes {
         margin-bottom: 1rem;

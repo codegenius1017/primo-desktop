@@ -29,7 +29,7 @@
       },
       options: {
         route: 'build',
-        width: 'md',
+        width: 'small',
         header: {
           title: 'Build to Github',
           icon: 'fab fa-github',

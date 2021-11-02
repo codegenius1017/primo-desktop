@@ -53,9 +53,14 @@
             class:active={hoveredItem === i}
             class:inactive={hoveredItem !== null && hoveredItem !== i}
           >
-            <div class="site-link">
+            <a
+              class="site-link"
+              href={site.id}
+              on:mouseenter={() => (hoveredItem = i)}
+              on:mouseleave={() => (hoveredItem = null)}
+            >
               <SiteThumbnail {site} />
-            </div>
+            </a>
             <div class="site-info">
               <div>
                 <div class="site-name">
@@ -447,10 +452,8 @@
             width: 2rem;
           }
 
-          &:hover {
-            svg {
-              background: var(--primo-color-primored);
-            }
+          &:hover svg {
+            color: var(--primo-color-primored);
           }
         }
       }
