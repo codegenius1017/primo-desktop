@@ -273,6 +273,8 @@
     min-height: 100vh;
 
     .container {
+      display: flex;
+      flex-direction: column;
       border-radius: var(--primo-border-radius);
       margin: 0 auto;
       padding: 1.5rem 1rem;
@@ -305,7 +307,6 @@
 
       ul.sites {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
         gap: 1rem;
 
         li {
@@ -333,6 +334,7 @@
           }
 
           .site-info {
+            flex: 1;
             color: var(--color-gray-1);
             display: grid;
             gap: 0.5rem;
@@ -557,19 +559,21 @@
     }
   }
 
-  @media (max-width: 600px) {
-    main {
-      ul.sites {
-        grid-template-columns: 1fr 1fr !important;
-      }
+  @media (min-width: 600px) {
+    main .sites-container ul.sites {
+      grid-template-columns: 1fr 1fr;
     }
   }
 
-  @media (max-width: 400px) {
-    main {
-      ul.sites {
-        grid-template-columns: auto !important;
-      }
+  @media (min-width: 900px) {
+    main .sites-container ul.sites {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    main .sites-container ul.sites {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
     }
   }
 </style>
