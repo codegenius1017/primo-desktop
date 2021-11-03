@@ -6,14 +6,12 @@
   import Spinner from '$lib/ui/Spinner.svelte'
   const { saved } = stores
 
-  function navigateToSite(site) {
-    console.log($saved)
+  function warn(e) {
     if (!$saved) {
       window.alert(
         `Save your site before navigating away so you don't lose your changes`
       )
-    } else {
-      goto(`/${site.id}`)
+      e.preventDefault()
     }
   }
 
@@ -23,7 +21,7 @@
 <ul class="primo-reset" xyz="fade stagger stagger-2">
   {#each featuredSites as site (site.id)}
     <li class="site-item xyz-in">
-      <button on:click={() => navigateToSite(site)}>
+      <a on:click={warn} href="/{site.id}">
         <div class="thumbnail">
           <SiteThumbnail {site} />
         </div>
@@ -43,7 +41,7 @@
             /></svg
           >
         </div>
-      </button>
+      </a>
     </li>
   {:else}
     <div class="spinner">
@@ -75,7 +73,8 @@
         box-shadow: var(--primo-ring-primored);
       }
 
-      button {
+      button,
+      a {
         display: flex;
         flex-direction: column;
         width: 100%;

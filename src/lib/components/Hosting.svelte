@@ -80,7 +80,11 @@
 
 <div class="boxes">
   {#each $hosts as host}
-    <a class="box host-account" href="https://vercel.com/{host.user.username}">
+    <a
+      class="box host-account"
+      href="https://vercel.com/{host.user.username}"
+      target="blank"
+    >
       <div class="user">
         {@html svg(host.type)}
       </div>
