@@ -76,7 +76,7 @@
       if (site) {
         $activeSite = site.data || site
       }
-    }, 100)
+    }, 500)
   }
 </script>
 
