@@ -187,7 +187,14 @@
 <main>
   <div class="publish">
     <div>
-      <Hosting />
+      <Hosting
+        buttons={[
+          {
+            label: 'Download Site',
+            onclick: downloadSite,
+          },
+        ]}
+      />
     </div>
     <div>
       {#if deployment}

@@ -6,6 +6,8 @@
   import TextField from '$lib/ui/TextField.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
 
+  export let buttons = []
+
   async function connectVercel(token) {
     const { data } = await axios
       .get('https://api.vercel.com/www/user', {
@@ -96,8 +98,8 @@
         >Back to web hosts</button
       >
       <form
-        on:submit|preventDefault={() => {
-          connectVercel(enteredToken)
+        on:submit|preventDefault={async () => {
+          await connectVercel(enteredToken)
           hostBeingConnected = null
         }}
         in:fade={{ duration: 200 }}
@@ -105,6 +107,10 @@
         <TextField
           bind:value={enteredToken}
           placeholder="7diizPFerd0Isu33ex9aamjT"
+          button={{
+            label: 'Connect',
+            type: 'submit',
+          }}
         >
           <p class="title">Vercel</p>
           <p class="subtitle">
@@ -165,6 +171,9 @@
     />
   {:else if !showingHosts}
     <footer>
+      {#each buttons as button}
+        <button class="link" on:click={button.onclick}>{button.label}</button>
+      {/each}
       <button class="link" on:click={() => (showingHosts = true)}
         >Connect a host</button
       >
@@ -244,6 +253,9 @@
     gap: 1rem;
 
     footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
       text-align: right;
     }
   }
