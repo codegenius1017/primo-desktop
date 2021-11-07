@@ -6,6 +6,7 @@
   export let label = null
   export let prefix = null
   export let variants = ''
+  export let button = null
 </script>
 
 <!-- svelte-ignore a11y-label-has-associated-control -->
@@ -25,6 +26,9 @@
       on:focus
       type="text"
     />
+    {#if button}
+      <button type={button.type}>{button.label}</button>
+    {/if}
   </div>
 </label>
 
@@ -76,6 +80,14 @@
 
       input:focus {
         outline: 0;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        background: var(--primo-color-primored);
+
+        &:hover {
+        }
       }
     }
   }
