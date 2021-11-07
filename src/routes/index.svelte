@@ -277,7 +277,7 @@
       flex-direction: column;
       border-radius: var(--primo-border-radius);
       margin: 0 auto;
-      padding: 1.5rem 1rem;
+      padding: 2rem;
       min-height: 100vh;
     }
 
