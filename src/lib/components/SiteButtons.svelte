@@ -1,9 +1,13 @@
 <script>
+  import { createEventDispatcher } from 'svelte'
   import { goto } from '$app/navigation'
   import sites from '../../stores/sites'
   import { stores } from '@primo-app/primo'
   import SiteThumbnail from '$lib/components/SiteThumbnail.svelte'
   import Spinner from '$lib/ui/Spinner.svelte'
+
+  const dispatch = createEventDispatcher()
+
   const { saved } = stores
 
   function warn(e) {
@@ -12,6 +16,8 @@
         `Save your site before navigating away so you don't lose your changes`
       )
       e.preventDefault()
+    } else {
+      dispatch('toggle')
     }
   }
 
