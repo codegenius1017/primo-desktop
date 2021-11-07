@@ -30,7 +30,7 @@
     setTimeout(() => {
       // wait for processors to be registered
       getPreview()
-    }, 200)
+    }, 500)
   }
 </script>
 
