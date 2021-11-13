@@ -55,23 +55,6 @@
         margin-right: 1rem;
       }
     }
-
-    .toolbar {
-      display: flex;
-
-      button.sign-out {
-        font-size: var(--font-size-1);
-        font-weight: 600;
-        border-radius: var(--primo-border-radius);
-        background: var(--color-gray-8);
-        color: var(--color-gray-2);
-        padding: 0.5rem 0.75rem;
-
-        &:hover {
-          background: var(--color-primored);
-        }
-      }
-    }
   }
 
   button {

@@ -37,4 +37,19 @@
   ])
 </script>
 
+<div id="primo-desktop-toolbar" />
 <slot />
+
+<style>
+  #primo-desktop-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    -webkit-app-region: drag;
+    border-bottom: 1px solid #222;
+    background: var(--primo-color-black);
+    z-index: 1;
+  }
+</style>

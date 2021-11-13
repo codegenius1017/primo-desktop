@@ -109,7 +109,7 @@
           </span>
         {/if}
         {#if field.value.url}
-          <img src={imagePreview} alt="Image preview" />
+          <img src={imagePreview} alt="Preview" />
         {/if}
         <label class="image-upload">
           <svg
@@ -265,10 +265,6 @@
       font-size: var(--font-size-1);
       font-weight: 600;
       border-bottom-right-radius: 0.25rem;
-    }
-
-    &.uploading {
-      border-color: rgba(248, 68, 73, var(--tw-border-opacity));
     }
 
     img {

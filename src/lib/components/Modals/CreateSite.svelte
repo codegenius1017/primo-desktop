@@ -1,13 +1,10 @@
 <script>
-  import axios from 'axios'
   import SiteThumbnail from '$lib/components/SiteThumbnail.svelte'
   import Spinner from '$lib/ui/Spinner.svelte'
   import TextField from '$lib/ui/TextField.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
   import { makeValidUrl } from '$lib/utils'
-  import sites from '../../../stores/sites'
   import { createSite } from '@primo-app/primo/src/const'
-  import { buildStaticPage } from '@primo-app/primo/src/stores/helpers'
 
   export let onSuccess = (newSite) => {}
   let loading
@@ -33,21 +30,6 @@
 
   function validateUrl() {
     siteID = makeValidUrl(siteIDFocused ? siteID : siteName)
-  }
-
-  let themes = []
-
-  let selectedTheme = { id: null }
-  async function selectTheme(theme) {
-    // selectedTheme = theme
-    // const res = await downloadSiteData(theme)
-    // const json = await res.data.text()
-    // const themeData = JSON.parse(json)
-    // data = {
-    //   ...themeData,
-    //   id: siteID,
-    //   name: siteName,
-    // }
   }
 
   let duplicatingSite = false
@@ -80,28 +62,6 @@
           on:focus={() => (siteIDFocused = true)}
         />
       </div>
-      <!-- {#if duplicatingSite}
-        <details open>
-          <summary>Themes</summary>
-          <ul>
-            {#each themes as theme}
-              <li>
-                <button
-                  class:selected={theme.id === selectedTheme.id ||
-                    (!theme.id && !selectedTheme)}
-                  on:click={() => selectTheme(theme)}
-                  type="button"
-                >
-                  <span>{theme.name}</span>
-                </button>
-                <div class="thumbnail-container">
-                  <SiteThumbnail site={theme} preview={theme.preview} />
-                </div>
-              </li>
-            {/each}
-          </ul>
-        </details>
-      {/if} -->
       <details id="advanced-options">
         <summary>Advanced options</summary>
         <div>

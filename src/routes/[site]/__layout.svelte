@@ -86,19 +86,3 @@
   {saving}
   on:save={async ({ detail: data }) => saveData(data)}
 />
-
-<style global lang="postcss">
-  .primo-reset {
-    @tailwind base;
-    font-family: 'Satoshi', sans-serif !important;
-
-    button,
-    button * {
-      cursor: pointer;
-    }
-  }
-
-  body {
-    margin: 0;
-  }
-</style>

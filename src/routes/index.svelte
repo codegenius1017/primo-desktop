@@ -6,6 +6,7 @@
   import sites from '../stores/sites'
   import cloudSites, { connected } from '../stores/cloudSites'
   import config from '../stores/config'
+  import { goto } from '$app/navigation'
 
   let loading
   function createSite() {
@@ -14,6 +15,7 @@
       props: {
         onSuccess: (site) => {
           $sites = [...$sites, site]
+          goto(site.id)
           hide()
         },
       },
@@ -70,7 +72,6 @@
                     >
                       <input
                         on:blur={() => (siteBeingEdited = null)}
-                        autofocus
                         class="reset-input"
                         type="text"
                         bind:value={site.name}
@@ -190,7 +191,6 @@
                     >
                       <input
                         on:blur={() => (siteBeingEdited = null)}
-                        autofocus
                         class="reset-input"
                         type="text"
                         bind:value={site.name}
@@ -271,6 +271,9 @@
   main {
     background-color: var(--primo-color-black);
     min-height: 100vh;
+    position: relative;
+    z-index: 0;
+    padding-top: 1rem;
 
     .container {
       display: flex;
@@ -344,15 +347,7 @@
             & > div {
               display: flex;
               flex-direction: column;
-              justify-content: start;
-              padding: 1.5rem;
-            }
-
-            & > a {
-              flex: 1;
-              display: flex;
-              justify-content: flex-end;
-              align-items: center;
+              justify-content: flex-start;
               padding: 1.5rem;
             }
 
@@ -411,26 +406,6 @@
               button {
                 margin-right: 0.75rem;
               }
-
-              .button-group {
-                margin-right: 0.5rem;
-              }
-            }
-
-            a.arrow {
-              grid-column: 2;
-
-              svg {
-                height: 2rem;
-                width: 2rem;
-              }
-
-              &:hover {
-                svg {
-                  color: var(--primo-color-primored);
-                  transform: translateX(5px);
-                }
-              }
             }
           }
         }
@@ -463,32 +438,6 @@
       }
     }
   }
-  .stop-deleting {
-    display: flex;
-    justify-content: space-between;
-  }
-  .small-button {
-    color: var(--color-gray-1);
-    background: var(--color-gray-8);
-    display: flex;
-    align-items: center;
-    height: 100%;
-    font-weight: 600;
-    border-radius: var(--primo-border-radius);
-    padding: 0.25rem 0.5rem;
-
-    svg {
-      height: 1rem;
-      width: 1rem;
-    }
-
-    &:hover {
-      background: var(--primo-color-primored);
-    }
-
-    --Spinner-size: 1rem;
-    --spinner-mr: 0.5rem;
-  }
 
   .delete-link {
     display: flex;
@@ -503,39 +452,6 @@
     }
     &:hover {
       color: var(--primo-color-primored);
-    }
-  }
-
-  .button-group {
-    margin-right: 0.5rem;
-    display: flex;
-    overflow: hidden;
-    border-radius: var(--primo-border-radius);
-
-    button {
-      font-size: var(--font-size-1);
-      color: var(--color-gray-1);
-      background: var(--color-gray-7);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      padding: 0.25rem 0.5rem;
-      transition: color 0.1s;
-      &:hover {
-        background: var(--primo-color-primored);
-      }
-      svg {
-        width: 0.75rem;
-        height: 100%;
-      }
-      svg + span {
-        display: inline-block;
-        margin-left: 0.25rem;
-      }
-    }
-
-    button:first-child:not(:only-child) {
-      border-right: 1px solid var(--color-gray-8);
     }
   }
 

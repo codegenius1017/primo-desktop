@@ -1,7 +1,7 @@
 <script>
   import axios from 'axios'
   import { flattenDeep, uniqBy } from 'lodash-es'
-  import TimeAgo from 'javascript-time-ago'
+  // import TimeAgo from 'javascript-time-ago'
   import en from 'javascript-time-ago/locale/en.json'
   import JSZip from 'jszip'
   import { saveAs } from 'file-saver'
@@ -14,8 +14,8 @@
   import ModalHeader from '@primo-app/primo/src/views/modal/ModalHeader.svelte'
   import { page } from '$app/stores'
 
-  TimeAgo.addDefaultLocale(en)
-  const timeAgo = new TimeAgo('en-US')
+  // TimeAgo.addDefaultLocale(en)
+  // const timeAgo = new TimeAgo('en-US')
 
   const siteID = $page.params.site
 
@@ -206,7 +206,7 @@
                 rel="external"
                 target="blank">{deployment.alias[0]}</a
               >
-              <span>{timeAgo.format(deployment.createdAt)}</span>
+              <!-- <span>{timeAgo.format(deployment.createdAt)}</span> -->
             </div>
           </div>
         </div>
@@ -264,12 +264,6 @@
     a {
       text-decoration: underline;
     }
-    span {
-      margin-right: 0.25rem;
-    }
-  }
-  a.title:hover {
-    color: var(--color-primored);
   }
 
   .subtitle {
@@ -277,61 +271,12 @@
     margin-bottom: 1rem;
     font-size: var(--font-size-2);
     line-height: 1.5;
-    a {
-      text-decoration: underline;
-      &:hover {
-        color: var(--color-primored);
-      }
-    }
   }
 
-  .error-message {
-    border: 1px solid var(--color-primored);
-    padding: 1rem;
-    font-size: 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .publish-description {
-    background: var(--color-gray-9);
-    color: var(--color-gray-2);
-    font-weight: 600;
-    padding: 1rem;
-    font-size: var(--font-size-2);
-    margin-bottom: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    a,
-    underline {
-      text-decoration: underline;
-    }
-  }
   main {
     background: var(--primo-color-black);
     color: var(--color-gray-1);
     padding: 1rem;
-    /* max-width: 500px;
-    align-self: flex-end; */
-
-    .message {
-      margin-bottom: 1rem;
-    }
-
-    .button-container {
-      --space-y: 0.5rem;
-
-      svg {
-        height: 1rem;
-        width: 1rem;
-        margin-right: 0.25rem;
-      }
-
-      hr {
-        border-color: var(--color-gray-8);
-      }
-    }
 
     .publish {
       display: grid;
@@ -366,26 +311,11 @@
             }
           }
 
-          span:last-child {
-            font-size: 0.75rem;
-            color: var(--color-gray-4);
-          }
           &:not(:last-child) {
             border-bottom: 1px solid var(--color-gray-8);
           }
         }
       }
-    }
-  }
-
-  input {
-    border: 0;
-    box-shadow: 0 0 0 2px transparent;
-    transition: box-shadow 0.2s;
-    border-radius: 1px;
-
-    &:focus {
-      box-shadow: 0 0 0 2px var(--color-primored);
     }
   }
 

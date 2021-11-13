@@ -79,7 +79,6 @@
         box-shadow: var(--primo-ring-primored);
       }
 
-      button,
       a {
         display: flex;
         flex-direction: column;
