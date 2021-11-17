@@ -25,12 +25,13 @@
 
     // overwrite the site id & name if it's been cloned
     // otherwise create one from scratch
-    siteData =
-      {
-        ...siteData,
-        id: siteID,
-        name: siteName,
-      } || createSite({ id: siteID, name: siteName })
+    siteData = siteData
+      ? {
+          ...siteData,
+          id: siteID,
+          name: siteName,
+        }
+      : createSite({ id: siteID, name: siteName })
 
     onSuccess(siteData)
   }
