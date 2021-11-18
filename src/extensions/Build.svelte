@@ -177,8 +177,6 @@
     }
   }
 
-  let published = false
-
   let pages = []
 </script>
 
@@ -213,14 +211,7 @@
       {/if}
       <header class="review">
         <div>
-          {#if published}
-            <p class="title">
-              Congrats! Your newest updates should be live in no time at <a
-                target="blank"
-                href="https://{$hosts?.vercel?.url}">{$hosts?.vercel?.url}</a
-              >.
-            </p>
-          {:else if pages.length > 0}
+          {#if pages.length > 0 && !deployment}
             <p class="title">Review and Publish</p>
             <p class="subtitle">
               Here are the changes that you're making to your site
@@ -230,14 +221,14 @@
               label="Save and Publish"
               {loading}
             />
-          {:else if $hosts.length > 0}
+          {:else if $hosts.length > 0 && !deployment}
             <p class="title">Publish Changes</p>
             <PrimaryButton
               on:click={publishToHosts}
               label="Save and Publish"
               {loading}
             />
-          {:else}
+          {:else if !deployment}
             <p class="title">Download your website</p>
             <p class="subtitle">
               You can connect a web host to publish your website directly from

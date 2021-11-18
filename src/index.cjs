@@ -17,8 +17,9 @@ const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     titleBarStyle: isMac ? 'hidden' : 'default',
-    width: 800,
-    height: 600,
+    minWidth: 650,
+    width: 1200,
+    height: 1200,
     webPreferences: {
       preload: `${__dirname}/preload.cjs`,
       enableRemoteModule: true,

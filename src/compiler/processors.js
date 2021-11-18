@@ -106,7 +106,7 @@ export async function html({ code, data, buildStatic = true, format = 'esm'}) {
 }
 
 
-export async function css(raw, options = {}) {
+export async function css(raw) {
   if (!raw) {
     return ''
   }
@@ -114,6 +114,7 @@ export async function css(raw, options = {}) {
   // if (cached) {
   //   return cached
   // }
+
   const { css, error } = await window.primo.processCSS(raw)
   
   // await idb.set(raw, css || error)

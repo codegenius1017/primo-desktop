@@ -6,7 +6,6 @@
   import sites from '../stores/sites'
   import cloudSites, { connected } from '../stores/cloudSites'
   import config from '../stores/config'
-  import { goto } from '$app/navigation'
 
   let loading
   function createSite() {
@@ -15,7 +14,7 @@
       props: {
         onSuccess: (site) => {
           $sites = [...$sites, site]
-          goto(site.id)
+          window.location.href = site.id // goto is breaking
           hide()
         },
       },
@@ -99,7 +98,7 @@
                     </a>
                   {/if}
                 </div>
-                <span class="site-url">{site.id} </span>
+                <span class="site-url">{site.id}</span>
                 <div class="buttons">
                   <button
                     class="delete-link"

@@ -64,36 +64,34 @@
           bind:value={siteName}
         />
         <TextField
-          label="Site URL"
+          label="Site ID"
           bind:value={siteID}
           on:input={validateUrl}
           on:focus={() => (siteIDFocused = true)}
         />
       </div>
-      <details id="advanced-options">
-        <summary>Advanced options</summary>
-        <div>
-          <div class="file">
-            <PrimaryButton type="input" on:change={readJsonFile}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              <span>Duplicate from primo.json</span>
-            </PrimaryButton>
-          </div>
-          {#if duplicatingSite}
-            <SiteThumbnail site={siteData} />
-          {/if}
-        </div>
-      </details>
+      <div id="upload-json">
+        <label>
+          <input
+            on:change={readJsonFile}
+            type="file"
+            id="primo-json"
+            accept=".json"
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span>Duplicate from primo.json</span>
+        </label>
+      </div>
       <div class="submit">
         <PrimaryButton
           type="submit"
@@ -119,9 +117,6 @@
 
     form {
       .name-url {
-        /* & > * {
-          margin-bottom: 0.5rem;
-        } */
         margin-bottom: 1.5rem;
       }
 
@@ -143,18 +138,31 @@
       }
     }
   }
-  #advanced-options {
-    margin-bottom: 1.5rem;
+  #upload-json {
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: flex-start;
 
-    .file {
+    label {
+      cursor: pointer;
       margin-bottom: 1rem;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+
+      input {
+        display: none;
+      }
+
+      span {
+        color: var(--color-gray-3);
+        font-size: 0.75rem;
+        text-decoration: underline;
+      }
 
       svg {
-        height: 1.25rem;
-        width: 1.25rem;
-        margin-right: 0.25rem;
+        height: 0.75rem;
+        width: 0.75rem;
       }
     }
   }
