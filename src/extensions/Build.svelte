@@ -1,8 +1,6 @@
 <script>
   import axios from 'axios'
   import { flattenDeep, uniqBy } from 'lodash-es'
-  // import TimeAgo from 'javascript-time-ago'
-  import en from 'javascript-time-ago/locale/en.json'
   import JSZip from 'jszip'
   import { saveAs } from 'file-saver'
   import { html as beautifyHTML } from 'js-beautify'
@@ -182,7 +180,7 @@
 
 <ModalHeader icon="fas fa-globe" title="Publish" variants="mb-4" />
 
-<main>
+<main class="primo-reset">
   <div class="publish">
     <div>
       <Hosting
@@ -199,6 +197,7 @@
         <div class="boxes">
           <div class="box">
             <div class="deployment">
+              Published to
               <a
                 href="https://{deployment.alias[0]}"
                 rel="external"
