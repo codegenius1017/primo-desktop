@@ -10,7 +10,6 @@
   let loading
   let siteName = ``
   let siteID = ``
-  let existingRepo = ``
   let siteIDFocused = false
   let message = ''
   // $: siteURL = siteID
@@ -20,8 +19,6 @@
 
   async function createNewSite() {
     loading = true
-
-    loading = false
 
     // overwrite the site id & name if it's been cloned
     // otherwise create one from scratch
@@ -41,9 +38,12 @@
   }
 
   let duplicatingSite = false
+  let duplicateFileIsValid = true
   function readJsonFile({ target }) {
+    console.log('reading')
     var reader = new window.FileReader()
     reader.onload = async function ({ target }) {
+      console.log('loaded')
       if (typeof target.result !== 'string') return
       siteData = JSON.parse(target.result)
       duplicatingSite = true
@@ -70,6 +70,11 @@
           on:focus={() => (siteIDFocused = true)}
         />
       </div>
+      {#if duplicatingSite}
+        <div class="site-thumbnail">
+          <SiteThumbnail bind:valid={duplicateFileIsValid} site={siteData} />
+        </div>
+      {/if}
       <div id="upload-json">
         <label>
           <input
@@ -92,17 +97,19 @@
           <span>Duplicate from primo.json</span>
         </label>
       </div>
-      <div class="submit">
-        <PrimaryButton
-          type="submit"
-          label={existingRepo ? 'Clone site from repo' : 'Create site'}
-          disabled={!canCreateSite}
-        />
-      </div>
+      {#if duplicateFileIsValid}
+        <div class="submit">
+          <PrimaryButton
+            type="submit"
+            label={duplicatingSite ? 'Duplicate' : 'Create'}
+            disabled={!canCreateSite}
+          />
+        </div>
+      {/if}
     </form>
   {:else}
     <div class="creating-site">
-      <span>Creating {siteName}</span>
+      <span>{duplicatingSite ? 'Creating' : 'Duplicating'} {siteName}</span>
       {#key message}
         <p>{message}</p>
       {/key}
@@ -165,6 +172,13 @@
         width: 0.75rem;
       }
     }
+  }
+
+  .site-thumbnail {
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    border: 1px solid var(--color-gray-8);
   }
 
   .creating-site {

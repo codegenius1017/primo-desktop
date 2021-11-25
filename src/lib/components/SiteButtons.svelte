@@ -95,7 +95,7 @@
         .card-footer {
           z-index: 10;
           font-size: var(--font-size-1);
-          padding: 0.75rem 1rem;
+          padding: 1rem;
           transition: background 0.1s, color 0.1s;
           display: flex;
           justify-content: space-between;
@@ -110,12 +110,14 @@
             font-size: var(--font-size-1);
 
             h2 {
+              line-height: 1.5;
               color: var(--color-gray-1);
               font-weight: 600;
               margin-bottom: 2px;
             }
 
             h3 {
+              line-height: 1.5;
               color: var(--color-gray-2);
             }
           }
