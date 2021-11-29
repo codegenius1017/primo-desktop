@@ -12,10 +12,10 @@ require('electron-reload')(__dirname, {
 
 const serveURL = serve({ directory: "build" });
 
-let mainWindow
+let win
 const createWindow = () => {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  win = new BrowserWindow({
     titleBarStyle: isMac ? 'hidden' : 'default',
     minWidth: 650,
     width: 1200,
@@ -26,24 +26,29 @@ const createWindow = () => {
       nodeIntegration: true,
       nativeWindowOpen: true
     },
+    show: false
   });
+
+  win.once('ready-to-show', () => {
+    win.show()
+  })
 
   // and load the index.html of the app.
   const isDev = !app.isPackaged
   const port = process.env.PORT || 3333
   if (isDev) {
     loadVitePage(port)
-  } else serveURL(mainWindow);
+  } else serveURL(win);
 
 
   // open external links in browser
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+  win.webContents.setWindowOpenHandler(({ url }) => {
       shell.openExternal(url);
       return { action: 'deny' };
   });
 
   function loadVitePage(port) {
-    mainWindow.loadURL(`http://localhost:${port}`).catch((err) => {
+    win.loadURL(`http://localhost:${port}`).catch((err) => {
       console.log('VITE NOT READY, WILL TRY AGAIN IN 1000ms', port)
       setTimeout(() => {
         // do it again as the vite build can take a bit longer the first time
@@ -75,17 +80,17 @@ app.on('window-all-closed', () => {
 app.on("web-contents-created", (...[/* event */, webContents]) => {
   webContents.on("context-menu", (event, click) => {
     event.preventDefault();
-    mainWindow.webContents.inspectElement(click.x, click.y)
+    win.webContents.inspectElement(click.x, click.y)
   }, false);
 });
 
-// app.on('activate', () => {
-//   // On OS X it's common to re-create a window in the app when the
-//   // dock icon is clicked and there are no other windows open.
-//   if (BrowserWindow.getAllWindows().length === 0) {
-//     createWindow();
-//   }
-// });
+app.on('activate', () => {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
