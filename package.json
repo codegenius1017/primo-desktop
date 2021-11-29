@@ -1,7 +1,7 @@
 {
   "name": "primo-desktop",
   "productName": "primo",
-  "version": "1.0.0-alpha.1",
+  "version": "V0.1.11",
   "description": "primo",
   "main": "src/index.cjs",
   "type": "module",
