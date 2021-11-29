@@ -4,9 +4,7 @@
 </script>
 
 <footer class="container">
-  <span class="disclaimer">
-    <span class="primo">primo</span> desktop alpha
-  </span>
+  <span class="disclaimer" />
   <div class="footer-links">
     <div>
       <a href="https://discord.gg/vzSFTS9" rel="external" target="blank"
