@@ -9,6 +9,7 @@
     fieldTypes,
     PrimoFieldTypes,
   } from '@primo-app/primo'
+  import * as primo from '@primo-app/primo/package.json'
 
   if (browser) {
     import('../compiler/processors').then(({ html, css }) => {
@@ -39,6 +40,10 @@
 
 <div id="primo-desktop-toolbar" />
 <slot />
+<div id="app-version">
+  <span>desktop v{__DESKTOP_VERSION__}</span>
+  <span>primo v{primo.version}</span>
+</div>
 
 <style>
   #primo-desktop-toolbar {
@@ -51,5 +56,17 @@
     border-bottom: 1px solid #222;
     background: var(--primo-color-black);
     z-index: 1;
+  }
+  #app-version {
+    font-family: 'Satoshi', sans-serif;
+    font-size: 0.75rem;
+    color: var(--color-gray-4);
+    position: fixed;
+    bottom: 0.5rem;
+    left: 0.5rem;
+
+    span:first-child {
+      margin-right: 0.5rem;
+    }
   }
 </style>

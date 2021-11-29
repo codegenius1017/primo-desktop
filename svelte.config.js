@@ -29,7 +29,7 @@ const config = {
         sourcemap: true,
       },
       define: {
-          '__APP_VERSION__': JSON.stringify(process.env.npm_package_version),
+          '__DESKTOP_VERSION__': JSON.stringify(process.env.npm_package_version),
       }
     }
 	}
