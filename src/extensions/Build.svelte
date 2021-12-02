@@ -67,6 +67,28 @@
             .catch((e) => ({ data: null }))
 
           deployment = data
+        } else if (type === 'netlify') {
+          const { data } = await axios
+            .post(
+              'https://api.netlify.com/api/v1/sites',
+              {
+                name: siteID,
+                files: uniqueFiles,
+                settings: {
+                  'netlify-identity-widget': {
+                    access_token: token,
+                  },
+                },
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+            .catch((e) => ({ data: null }))
+
+          deployment = data
         }
       })
     )
