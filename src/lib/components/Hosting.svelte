@@ -157,32 +157,14 @@
               </svg>`,
     }[type])
 
-  let accounts = []
-
-  // $: getAccountData($user.tokens)
-
   let enteredToken
 </script>
 
 <div class="boxes">
   {#each $hosts as host}
-    <a
-      class="box host-account"
-      href="https://vercel.com/{host.user.username}"
-      target="blank"
-    >
+    <a class="box host-account" href="https://{host.type}.com" target="blank">
       <div class="user">
         {@html svg(host.type)}
-      </div>
-    </a>
-    <!-- Netlify -->
-    <a
-      class="box host-account"
-      href="https://app.netlify.com/sites/{host.user.username}"
-      target="blank"
-    >
-      <div class="user">
-        {@html svg('netlify')}
       </div>
     </a>
   {/each}

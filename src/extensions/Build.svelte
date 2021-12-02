@@ -19,14 +19,18 @@
 
   let loading = false
 
-  async function downloadSite() {
-    loading = true
+  async function createSiteZip() {
     const zip = new JSZip()
     const files = await buildSiteBundle($site, siteID)
     files.forEach((file) => {
       zip.file(file.path, file.content)
     })
-    const toDownload = await zip.generateAsync({ type: 'blob' })
+    return await zip.generateAsync({ type: 'blob' })
+  }
+
+  async function downloadSite() {
+    loading = true
+    const toDownload = await createSiteZip()
     saveAs(toDownload, `${siteID}.zip`)
     modal.hide()
   }
@@ -45,7 +49,7 @@
     const uniqueFiles = uniqBy(files, 'file') // modules are duplicated
 
     await Promise.allSettled(
-      $hosts.map(async ({ token, type }) => {
+      $hosts.map(async ({ token, type, deploymentID }) => {
         if (type === 'vercel') {
           const { data } = await axios
             .post(
@@ -68,25 +72,21 @@
 
           deployment = data
         } else if (type === 'netlify') {
+          // if deploymentID does not exists, create new site
+
+          const zipFile = await createSiteZip()
+          console.log({ zipFile })
           const { data } = await axios
-            .post(
-              'https://api.netlify.com/api/v1/sites',
-              {
-                name: siteID,
-                files: uniqueFiles,
-                settings: {
-                  'netlify-identity-widget': {
-                    access_token: token,
-                  },
-                },
+            .post('https://api.netlify.com/api/v1/sites', zipFile, {
+              headers: {
+                'Content-Type': 'application/zip',
+                Authorization: `Bearer ${token}`,
               },
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            )
+            })
             .catch((e) => ({ data: null }))
+          console.log({ data })
+
+          // if deploymentID exists, update site w/ deploymentID
 
           deployment = data
         }
@@ -220,11 +220,11 @@
           <div class="box">
             <div class="deployment">
               Published to
-              <a
+              <!-- <a
                 href="https://{deployment.alias[0]}"
                 rel="external"
                 target="blank">{deployment.alias[0]}</a
-              >
+              > -->
               <!-- <span>{timeAgo.format(deployment.createdAt)}</span> -->
             </div>
           </div>
