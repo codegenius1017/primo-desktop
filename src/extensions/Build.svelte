@@ -49,7 +49,7 @@
     const uniqueFiles = uniqBy(files, 'file') // modules are duplicated
 
     await Promise.allSettled(
-      $hosts.map(async ({ token, type, deploymentID }) => {
+      $hosts.map(async ({ token, type, deploymentSiteID }) => {
         if (type === 'vercel') {
           const { data } = await axios
             .post(
@@ -73,22 +73,53 @@
           deployment = data
         } else if (type === 'netlify') {
           // if deploymentID does not exists, create new site
+          if (!deploymentSiteID) {
+            const zipFile = await createSiteZip()
+            const { data } = await axios
+              .post('https://api.netlify.com/api/v1/sites', zipFile, {
+                headers: {
+                  'Content-Type': 'application/zip',
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .catch((e) => ({ data: null }))
 
-          const zipFile = await createSiteZip()
-          console.log({ zipFile })
-          const { data } = await axios
-            .post('https://api.netlify.com/api/v1/sites', zipFile, {
-              headers: {
-                'Content-Type': 'application/zip',
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .catch((e) => ({ data: null }))
-          console.log({ data })
+            deploymentSiteID = data.id
+            deployment = data
 
-          // if deploymentID exists, update site w/ deploymentID
+            hosts.update((hosts) =>
+              hosts.map((host) =>
+                host.type === type
+                  ? {
+                      ...host,
+                      deploymentSiteID: data.id,
+                    }
+                  : host
+              )
+            )
 
-          deployment = data
+            console.log({ deploymentSiteID }, 'deploymentSiteID from create') // I will let it her for later tests
+          }
+
+          // else if deploymentSiteID exists, update Netlify site by the deploymentSiteID and the zipFile
+          else {
+            const zipFile = await createSiteZip()
+            const { data } = await axios
+              .put(
+                `https://api.netlify.com/api/v1/sites/${deploymentSiteID}`,
+                zipFile,
+                {
+                  headers: {
+                    'Content-Type': 'application/zip',
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
+              .catch((e) => ({ data: null }))
+
+            deployment = data
+            console.log({ deploymentSiteID }, 'deploymentSiteID from update') // I will let it her for later tests
+          }
         }
       })
     )
