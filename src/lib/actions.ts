@@ -1,6 +1,7 @@
 import {get} from 'svelte/store'
 import axios from 'axios'
 import config from '../stores/config'
+import sites from '../stores/sites'
 
 export const cloudSites = {
   save: async (site) => {
@@ -23,4 +24,15 @@ export const cloudSites = {
     }
     return successful
   }
+}
+
+export async function addDeploymentToSite({siteID, deployment, activeDeployment}) {
+  sites.update(s => s.map(site => site.id === siteID ? ({
+    ...site,
+    deployments: [
+      deployment,
+      ...site.deployments
+    ],
+    activeDeployment
+  }) : site))
 }

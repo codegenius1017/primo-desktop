@@ -39,7 +39,7 @@ contextBridge.exposeInMainWorld('primo', {
     },
     load: () => {
       const data = ipcRenderer.sendSync('load-data', saveDirectory)
-      return data
+      return data || []
     },
     save: (data) => {
       const success = ipcRenderer.sendSync('save-data', data)

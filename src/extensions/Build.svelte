@@ -11,6 +11,7 @@
   import hosts from '../stores/hosts'
   import ModalHeader from '@primo-app/primo/src/views/modal/ModalHeader.svelte'
   import { page } from '$app/stores'
+  import { addDeploymentToSite } from '$lib/actions'
 
   // TimeAgo.addDefaultLocale(en)
   // const timeAgo = new TimeAgo('en-US')
@@ -49,9 +50,9 @@
     const uniqueFiles = uniqBy(files, 'file') // modules are duplicated
 
     await Promise.allSettled(
-      $hosts.map(async ({ token, type, deploymentSiteID }) => {
+      $hosts.map(async ({ token, type, siteDeploymentID }) => {
         if (type === 'vercel') {
-          const { data } = await axios
+          const res = await axios
             .post(
               'https://api.vercel.com/v12/now/deployments',
               {
@@ -70,12 +71,18 @@
             )
             .catch((e) => ({ data: null }))
 
-          deployment = data
+          // TODO: Hook up vercel
+          console.log({ res })
+
+          // deployment = res.data
         } else if (type === 'netlify') {
           // if deploymentID does not exists, create new site
-          if (!deploymentSiteID) {
+
+          let data
+
+          if (!siteDeploymentID) {
             const zipFile = await createSiteZip()
-            const { data } = await axios
+            const res = await axios
               .post('https://api.netlify.com/api/v1/sites', zipFile, {
                 headers: {
                   'Content-Type': 'application/zip',
@@ -84,29 +91,12 @@
               })
               .catch((e) => ({ data: null }))
 
-            deploymentSiteID = data.id
-            deployment = data
-
-            hosts.update((hosts) =>
-              hosts.map((host) =>
-                host.type === type
-                  ? {
-                      ...host,
-                      deploymentSiteID: data.id,
-                    }
-                  : host
-              )
-            )
-
-            console.log({ deploymentSiteID }, 'deploymentSiteID from create') // I will let it her for later tests
-          }
-
-          // else if deploymentSiteID exists, update Netlify site by the deploymentSiteID and the zipFile
-          else {
+            data = res.data
+          } else {
             const zipFile = await createSiteZip()
-            const { data } = await axios
+            const res = await axios
               .put(
-                `https://api.netlify.com/api/v1/sites/${deploymentSiteID}`,
+                `https://api.netlify.com/api/v1/sites/${siteDeploymentID}`,
                 zipFile,
                 {
                   headers: {
@@ -117,9 +107,26 @@
               )
               .catch((e) => ({ data: null }))
 
-            deployment = data
-            console.log({ deploymentSiteID }, 'deploymentSiteID from update') // I will let it her for later tests
+            data = res.data
           }
+
+          // check for null data before continuing
+
+          deployment = {
+            id: data.deploy_id,
+            url: data.url,
+            created: Date.now(),
+          }
+
+          addDeploymentToSite({
+            siteID,
+            deployment,
+            activeDeployment: {
+              type,
+              siteID: data.id,
+              url: `https://${data.subdomain}.netlify.app`,
+            },
+          })
         }
       })
     )
@@ -251,12 +258,9 @@
           <div class="box">
             <div class="deployment">
               Published to
-              <!-- <a
-                href="https://{deployment.alias[0]}"
-                rel="external"
-                target="blank">{deployment.alias[0]}</a
-              > -->
-              <!-- <span>{timeAgo.format(deployment.createdAt)}</span> -->
+              <a href={deployment.url} rel="external" target="blank"
+                >{deployment.url}</a
+              >
             </div>
           </div>
         </div>
