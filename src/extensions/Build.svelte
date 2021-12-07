@@ -37,6 +37,7 @@
   }
 
   let deployment
+  let activeDeployment
   async function publishToHosts() {
     loading = true
 
@@ -110,23 +111,29 @@
             data = res.data
           }
 
-          // check for null data before continuing
+          // check for null data before continuing if null then handle this error else continue
+          if (!data) {
+            console.log({ data })
+            throw new Error('Error creating site')
+          } else {
+            deployment = {
+              id: data.deploy_id,
+              url: data.url,
+              created: Date.now(),
+            }
 
-          deployment = {
-            id: data.deploy_id,
-            url: data.url,
-            created: Date.now(),
+            addDeploymentToSite({
+              siteID,
+              deployment,
+              activeDeployment: {
+                type,
+                siteID: data.id,
+                url: `https://${data.subdomain}.netlify.app`,
+              },
+            })
+            console.log({ deployment })
+            console.log({ activeDeployment })
           }
-
-          addDeploymentToSite({
-            siteID,
-            deployment,
-            activeDeployment: {
-              type,
-              siteID: data.id,
-              url: `https://${data.subdomain}.netlify.app`,
-            },
-          })
         }
       })
     )
@@ -265,8 +272,21 @@
           </div>
         </div>
       {/if}
+      <!-- show activeDeployment from addDeploymentToSite-->
       <header class="review">
         <div>
+          {#if activeDeployment && deployment}
+            <div class="boxes">
+              <div class="box">
+                <div class="deployment">
+                  Active Deployment
+                  <a href={activeDeployment.url} rel="external" target="blank"
+                    >{activeDeployment.url}</a
+                  >
+                </div>
+              </div>
+            </div>
+          {/if}
           {#if pages.length > 0 && !deployment}
             <p class="title">Review and Publish</p>
             <p class="subtitle">
