@@ -11,7 +11,7 @@
   import hosts from '../stores/hosts'
   import ModalHeader from '@primo-app/primo/src/views/modal/ModalHeader.svelte'
   import { page } from '$app/stores'
-  import { addDeploymentToSite } from '$lib/actions'
+  // import { addDeploymentToSite } from '$lib/actions'
 
   // TimeAgo.addDefaultLocale(en)
   // const timeAgo = new TimeAgo('en-US')
@@ -51,9 +51,9 @@
     const uniqueFiles = uniqBy(files, 'file') // modules are duplicated
 
     await Promise.allSettled(
-      $hosts.map(async ({ token, type, siteDeploymentID }) => {
-        if (type === 'vercel') {
-          const res = await axios
+      $hosts.map(async ({ token, name, siteDeploymentID }) => {
+        if (name === 'vercel') {
+          const { data } = await axios
             .post(
               'https://api.vercel.com/v12/now/deployments',
               {
@@ -73,10 +73,12 @@
             .catch((e) => ({ data: null }))
 
           // TODO: Hook up vercel
-          console.log({ res })
-
-          // deployment = res.data
-        } else if (type === 'netlify') {
+          deployment = {
+            id: data?.id,
+            url: `https://${data.alias[0]}`,
+            createdAt: data?.createdAt,
+          }
+        } else if (name === 'netlify') {
           // if deploymentID does not exists, create new site
 
           let data
@@ -93,6 +95,8 @@
               .catch((e) => ({ data: null }))
 
             data = res.data
+            console.log({ siteDeploymentID }, 'siteDeploymentID create')
+            console.log({ deployment }, 'deployment create')
           } else {
             const zipFile = await createSiteZip()
             const res = await axios
@@ -107,31 +111,29 @@
                 }
               )
               .catch((e) => ({ data: null }))
-
             data = res.data
+            console.log({ deployment }, 'deployment update')
+            console.log({ siteDeploymentID }, 'siteDeploymentID update')
           }
 
           // check for null data before continuing if null then handle this error else continue
           if (!data) {
-            console.log({ data })
-            throw new Error('Error creating site')
+            console.warn('Error creating site', { data })
           } else {
             deployment = {
               id: data.deploy_id,
               url: data.url,
               created: Date.now(),
             }
-
-            addDeploymentToSite({
-              siteID,
-              deployment,
-              activeDeployment: {
-                type,
-                siteID: data.id,
-                url: `https://${data.subdomain}.netlify.app`,
-              },
-            })
-            console.log({ deployment })
+            // addDeploymentToSite({
+            //   siteID,
+            //   deployment,
+            //   activeDeployment: {
+            //     type,
+            //     siteID: data.id,
+            //     url: `https://${data.subdomain}.netlify.app`,
+            //   },
+            // })
             console.log({ activeDeployment })
           }
         }
@@ -273,20 +275,20 @@
         </div>
       {/if}
       <!-- show activeDeployment from addDeploymentToSite-->
+      {#if activeDeployment && deployment}
+        <div class="boxes">
+          <div class="box">
+            <div class="deployment">
+              Active Deployment
+              <a href={activeDeployment.url} rel="external" target="blank"
+                >{activeDeployment.url}</a
+              >
+            </div>
+          </div>
+        </div>
+      {/if}
       <header class="review">
         <div>
-          {#if activeDeployment && deployment}
-            <div class="boxes">
-              <div class="box">
-                <div class="deployment">
-                  Active Deployment
-                  <a href={activeDeployment.url} rel="external" target="blank"
-                    >{activeDeployment.url}</a
-                  >
-                </div>
-              </div>
-            </div>
-          {/if}
           {#if pages.length > 0 && !deployment}
             <p class="title">Review and Publish</p>
             <p class="subtitle">
