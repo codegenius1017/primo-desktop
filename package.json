@@ -6,6 +6,7 @@
   "main": "src/index.cjs",
   "type": "module",
   "scripts": {
+    "dist": "electron-builder",
     "electron": "electron .",
     "start": "concurrently \"npm:dev\" \"electron .\"",
     "package": "electron-forge package",
@@ -26,7 +27,18 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "primo.icns"
+        "icon": "primo.icns",
+        "osxSign": {
+          "identity": "Developer ID Application: Primo Creative LLC (7782K26HH4)",
+          "hardened-runtime": true,
+          "entitlements": "./entitlements.plist",
+          "entitlements-inherit": "./entitlements.plist",
+          "signature-flags": "library"
+        },
+        "osxNotarize": {
+          "appleId": "accounts@primo.af",
+          "appleIdPassword": "wcpd-knmo-dnmo-rmad"
+        }
       },
       "makers": [
         {
@@ -34,6 +46,17 @@
           "platforms": [
             "darwin"
           ]
+        },
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "background": "./assets/dmg-background.png",
+          "config": {
+            "format": "ULFO"
+          }
         }
       ]
     }
@@ -62,13 +85,15 @@
     "postcss-preset-env": "^6.7.0",
     "postcss-selector-parser": "^6.0.6",
     "prettier": "^2.4.1",
-    "promise-worker": "^2.0.1"
+    "promise-worker": "^2.0.1",
+    "update-electron-app": "^2.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@electron-forge/cli": "^6.0.0-beta.61",
     "@electron-forge/maker-deb": "^6.0.0-beta.61",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.61",
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
@@ -80,6 +105,7 @@
     "@tsconfig/svelte": "^2.0.1",
     "concurrently": "^6.4.0",
     "electron": "^14.0.1",
+    "electron-builder": "^22.14.5",
     "electron-packager": "^15.4.0",
     "prettier-plugin-svelte": "^2.2.0",
     "svelte": "^3.44.0",
