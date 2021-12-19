@@ -6,6 +6,7 @@
   import sites from '../stores/sites'
   import cloudSites, { connected } from '../stores/cloudSites'
   import config from '../stores/config'
+  import store from '../stores/config'
 
   let loading
   function createSite() {
@@ -13,9 +14,23 @@
       id: 'SITE_CREATION',
       props: {
         onSuccess: (site) => {
-          $sites = [...$sites, site]
+          $sites = [
+            ...$sites,
+            {
+              id: site.id,
+              name: site.name,
+              data: site,
+              deployments: [],
+              activeDeployment: null,
+            },
+          ]
           window.location.href = site.id // goto is breaking
           hide()
+          // setTimeout(() => {
+          //   // wait for file to be written
+          //   window.location.href = site.id // goto is breaking
+          //   hide()
+          // }, 500)
         },
       },
     })
@@ -60,7 +75,7 @@
               on:mouseenter={() => (hoveredItem = i)}
               on:mouseleave={() => (hoveredItem = null)}
             >
-              <SiteThumbnail bind:valid={site.valid} {site} />
+              <SiteThumbnail bind:valid={site.valid} site={site.data} />
             </a>
             <div class="site-info">
               <div>

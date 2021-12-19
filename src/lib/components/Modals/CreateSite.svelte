@@ -109,7 +109,7 @@
     </form>
   {:else}
     <div class="creating-site">
-      <span>{duplicatingSite ? 'Creating' : 'Duplicating'} {siteName}</span>
+      <span>{duplicatingSite ? 'Duplicating' : 'Creating'} {siteName}</span>
       {#key message}
         <p>{message}</p>
       {/key}

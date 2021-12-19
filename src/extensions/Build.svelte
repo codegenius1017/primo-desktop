@@ -103,8 +103,6 @@
               .catch((e) => ({ data: null }))
 
             data = res.data
-            console.log({ data }, 'siteDeploymentID create')
-            console.log({ deployment }, 'deployment create')
           } else {
             const zipFile = await createSiteZip()
             const res = await axios
@@ -120,7 +118,6 @@
               )
               .catch((e) => ({ data: null }))
             data = res.data
-            console.log({ data }, 'siteDeploymentID update')
           }
 
           // check for null data before continuing if null then handle this error else continue
@@ -142,7 +139,6 @@
               },
             })
           }
-          console.log({ activeDeployment }, 'activeDeployment')
         }
       })
     )
@@ -289,6 +285,19 @@
                 >{activeDeployment.url}</a
               >
               <span>{format(activeDeployment.created)}</span>
+            </div>
+          </div>
+        </div>
+      {/if}
+      <!-- show activeDeployment from addDeploymentToSite-->
+      {#if activeDeployment && deployment}
+        <div class="boxes">
+          <div class="box">
+            <div class="deployment">
+              Active Deployment
+              <a href={activeDeployment.url} rel="external" target="blank"
+                >{activeDeployment.url}</a
+              >
             </div>
           </div>
         </div>
