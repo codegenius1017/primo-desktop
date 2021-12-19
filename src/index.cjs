@@ -2,6 +2,9 @@ const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const serve = require('electron-serve');
 
+// Check for updates
+require('update-electron-app')()
+
 const isMac = (process.platform === "darwin")
 
 // Live Reload
