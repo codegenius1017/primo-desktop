@@ -1,22 +1,22 @@
 <script>
   import axios from 'axios'
-  import { flattenDeep, uniqBy } from 'lodash-es'
+  import { flattenDeep, uniqBy, find } from 'lodash-es'
   import JSZip from 'jszip'
   import { saveAs } from 'file-saver'
   import { html as beautifyHTML } from 'js-beautify'
+  import { format } from 'timeago.js'
   import Hosting from '$lib/components/Hosting.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
   import { site, modal } from '@primo-app/primo'
   import { buildStaticPage } from '@primo-app/primo/src/stores/helpers'
   import hosts from '../stores/hosts'
+  import sites from '../stores/sites'
   import ModalHeader from '@primo-app/primo/src/views/modal/ModalHeader.svelte'
   import { page } from '$app/stores'
   import { addDeploymentToSite } from '$lib/actions'
 
-  // TimeAgo.addDefaultLocale(en)
-  // const timeAgo = new TimeAgo('en-US')
-
   const siteID = $page.params.site
+  const activeDeployment = find($sites, ['id', siteID]).activeDeployment
 
   let loading = false
 
@@ -37,7 +37,6 @@
   }
 
   let deployment
-  let activeDeployment
   async function publishToHosts() {
     loading = true
 
@@ -51,9 +50,9 @@
     const uniqueFiles = uniqBy(files, 'file') // modules are duplicated
 
     await Promise.allSettled(
-      $hosts.map(async ({ token, type, siteDeploymentID }) => {
-        if (type === 'vercel') {
-          const res = await axios
+      $hosts.map(async ({ token, name }) => {
+        if (name === 'vercel') {
+          const { data } = await axios
             .post(
               'https://api.vercel.com/v12/now/deployments',
               {
@@ -73,15 +72,26 @@
             .catch((e) => ({ data: null }))
 
           // TODO: Hook up vercel
-          console.log({ res })
-
-          // deployment = res.data
-        } else if (type === 'netlify') {
+          deployment = {
+            id: data?.id,
+            url: `https://${data.alias[0]}`,
+            created: data?.createdAt,
+          }
+          addDeploymentToSite({
+            siteID,
+            deployment,
+            activeDeployment: {
+              ...deployment,
+              name,
+              siteID: data.id,
+            },
+          })
+        } else if (name === 'netlify') {
           // if deploymentID does not exists, create new site
 
           let data
 
-          if (!siteDeploymentID) {
+          if (!activeDeployment) {
             const zipFile = await createSiteZip()
             const res = await axios
               .post('https://api.netlify.com/api/v1/sites', zipFile, {
@@ -93,11 +103,13 @@
               .catch((e) => ({ data: null }))
 
             data = res.data
+            console.log({ data }, 'siteDeploymentID create')
+            console.log({ deployment }, 'deployment create')
           } else {
             const zipFile = await createSiteZip()
             const res = await axios
               .put(
-                `https://api.netlify.com/api/v1/sites/${siteDeploymentID}`,
+                `https://api.netlify.com/api/v1/sites/${activeDeployment.siteID}`,
                 zipFile,
                 {
                   headers: {
@@ -107,33 +119,30 @@
                 }
               )
               .catch((e) => ({ data: null }))
-
             data = res.data
+            console.log({ data }, 'siteDeploymentID update')
           }
 
           // check for null data before continuing if null then handle this error else continue
           if (!data) {
-            console.log({ data })
-            throw new Error('Error creating site')
+            console.warn('Error creating site', { data })
           } else {
             deployment = {
               id: data.deploy_id,
               url: data.url,
               created: Date.now(),
             }
-
             addDeploymentToSite({
               siteID,
               deployment,
               activeDeployment: {
-                type,
+                ...deployment,
+                name,
                 siteID: data.id,
-                url: `https://${data.subdomain}.netlify.app`,
               },
             })
-            console.log({ deployment })
-            console.log({ activeDeployment })
           }
+          console.log({ activeDeployment }, 'activeDeployment')
         }
       })
     )
@@ -271,22 +280,21 @@
             </div>
           </div>
         </div>
+      {:else if activeDeployment}
+        <div class="boxes">
+          <div class="box">
+            <div class="deployment">
+              Last published to
+              <a href={activeDeployment.url} rel="external" target="blank"
+                >{activeDeployment.url}</a
+              >
+              <span>{format(activeDeployment.created)}</span>
+            </div>
+          </div>
+        </div>
       {/if}
-      <!-- show activeDeployment from addDeploymentToSite-->
       <header class="review">
         <div>
-          {#if activeDeployment && deployment}
-            <div class="boxes">
-              <div class="box">
-                <div class="deployment">
-                  Active Deployment
-                  <a href={activeDeployment.url} rel="external" target="blank"
-                    >{activeDeployment.url}</a
-                  >
-                </div>
-              </div>
-            </div>
-          {/if}
           {#if pages.length > 0 && !deployment}
             <p class="title">Review and Publish</p>
             <p class="subtitle">

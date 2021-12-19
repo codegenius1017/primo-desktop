@@ -36,15 +36,16 @@ export async function addDeploymentToSite({
   activeDeployment,
 }) {
   stores.sites.update((s) =>
-    s.map((site) =>
-      site.id === siteID
+    s.map((site) => {
+      console.log(site)
+      return site.id === siteID
         ? {
             ...site,
             deployments: [deployment, ...site.deployments],
             activeDeployment,
           }
         : site
-    )
+    })
   )
 }
 
@@ -71,6 +72,7 @@ export const hosts = {
           {
             name,
             token,
+            // user: data.user,
           },
         ]
       })

@@ -9,17 +9,20 @@ if (browser) initializSiteData()
 
 async function initializSiteData() {
   const { data } = window.primo // preload.cjs
-  const sites = data.load()
+  const siteFiles = data.load()
   const sitesDB = await get('sites')
 
-  const rebuiltSites = sites.map((site) => {
-    const savedSite = _find(sitesDB, (site) => site.data.id === site.id)
+  const rebuiltSites = siteFiles.map((siteFile) => {
+    const savedSite = _find(
+      sitesDB,
+      (savedSite) => savedSite.id === siteFile.id
+    )
     return {
-      id: site.id,
-      name: site.name,
+      id: siteFile.id,
+      name: siteFile.name,
       deployments: savedSite ? savedSite.deployments : [],
       activeDeployment: savedSite ? savedSite.activeDeployment : null,
-      data: site,
+      data: siteFile,
     }
   })
 
@@ -34,7 +37,6 @@ async function initializSiteData() {
     set('sites', s)
   })
 }
-
 export default {
   update: store.update,
   set: store.set,
