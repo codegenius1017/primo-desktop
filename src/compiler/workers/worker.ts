@@ -9,7 +9,7 @@ async function fetch_package(url) {
     return (await fetch(url)).text();
 }
 
-registerPromiseWorker(async function ({code,data,hydrated,buildStatic = true, format = 'esm'}) {
+registerPromiseWorker(async function ({code,hydrated,buildStatic = true, format = 'esm'}) {
 
     const final = {
         ssr: '',
