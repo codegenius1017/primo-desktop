@@ -10,6 +10,7 @@
     PrimoFieldTypes,
   } from '@primo-app/primo'
   import * as primo from '@primo-app/primo/package.json'
+  import * as desktop from '../../package.json'
 
   if (browser) {
     import('../compiler/processors').then(({ html, css }) => {
@@ -41,7 +42,7 @@
 <div id="primo-desktop-toolbar" />
 <slot />
 <div id="app-version">
-  <span>desktop v{__DESKTOP_VERSION__}</span>
+  <span>desktop v{desktop.version}</span>
   <span>primo v{primo.version}</span>
 </div>
 
