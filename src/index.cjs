@@ -1,9 +1,42 @@
-const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, autoUpdater, dialog } = require('electron');
 const path = require('path');
 const serve = require('electron-serve');
+const isDev = require('electron-is-dev');
 
-// Check for updates
-require('update-electron-app')()
+if (!isDev) {
+  // Check for updates
+  const server = 'https://update.electronjs.org'
+  const url = `${server}/primo-af/primo-desktop/${process.platform}/${app.getVersion()}`
+  autoUpdater.setFeedURL({ url })
+  setInterval(() => {
+    autoUpdater.checkForUpdates()
+  }, 60000)
+
+  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+    const dialogOpts = {
+      type: 'info',
+      buttons: ['Restart', 'Later'],
+      title: 'Application Update',
+      message: process.platform === 'win32' ? releaseNotes : releaseName,
+      detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+    }
+
+    dialog.showMessageBox(dialogOpts).then((returnValue) => {
+      if (returnValue.response === 0) autoUpdater.quitAndInstall()
+    })
+  })
+
+  autoUpdater.on('error', e => {
+    console.log(e)
+    dialog.showMessageBox({
+      title: 'Error here',
+      message: e.message
+    })
+    console.error('There was a problem updating the application')
+    console.error(e)
+  })
+}
+
 
 const isMac = (process.platform === "darwin")
 
@@ -136,7 +169,6 @@ ipcMain.on('delete-site', (event, site) => {
 })
 
 // SAVE DIRECTORY
-const {dialog} = require('electron')
 ipcMain.on('set-save-directory', async (event, arg) => {
   const res = await dialog.showOpenDialog({ properties: ['openDirectory', 'createDirectory'] })
   if (!res.canceled) {
