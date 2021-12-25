@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, shell, autoUpdater, dialog } = require('ele
 const path = require('path');
 const serve = require('electron-serve');
 const isDev = require('electron-is-dev');
+const checkInternetConnected = require('check-internet-connected');
 
 if (!isDev) {
   // Check for updates
@@ -9,7 +10,19 @@ if (!isDev) {
   const url = `${server}/primo-af/primo-desktop/${process.platform}/${app.getVersion()}`
   autoUpdater.setFeedURL({ url })
   setInterval(() => {
-    autoUpdater.checkForUpdates()
+    const config = {
+      timeout: 5000, //timeout connecting to each try (default 5000)
+      retries: 3,//number of retries to do before failing (default 5)
+      domain: 'primo.af'//the domain to check DNS record of
+    }
+  
+    checkInternetConnected(config)
+      .then(() => {
+        autoUpdater.checkForUpdates()    
+      }).catch((err) => {
+        console.log("No connection", err);
+      });
+
   }, 60000)
 
   autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
