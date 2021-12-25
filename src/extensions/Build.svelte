@@ -97,19 +97,19 @@
         path: `primo.json`,
         content: JSON.stringify(site),
       },
-      // [
-      //   {
-      //     path: `primo/index.html`,
-      //     content: primoPage,
-      //   },
-      //   // {
-      //   //   path: 'robots.txt',
-      //   //   content: `
-      //   //   # Example 3: Block all but AdsBot crawlers
-      //   //   User-agent: *
-      //   //   Disallow: /`
-      //   // },
-      // ],
+      [
+        {
+          path: `edit/index.html`,
+          content: primoPage,
+        },
+        // {
+        //   path: 'robots.txt',
+        //   content: `
+        //   # Example 3: Block all but AdsBot crawlers
+        //   User-agent: *
+        //   Disallow: /`
+        // },
+      ],
     ])
 
     return buildSiteTree(pages, site)
