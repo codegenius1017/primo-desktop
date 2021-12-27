@@ -171,24 +171,24 @@
         path: `primo.json`,
         content: JSON.stringify(site),
       },
-      // [
-      //   {
-      //     path: `primo/index.html`,
-      //     content: primoPage,
-      //   },
-      //   // {
-      //   //   path: 'robots.txt',
-      //   //   content: `
-      //   //   # Example 3: Block all but AdsBot crawlers
-      //   //   User-agent: *
-      //   //   Disallow: /`
-      //   // },
-      // ],
+      [
+        {
+          path: `edit/index.html`,
+          content: primoPage,
+        },
+        // {
+        //   path: 'robots.txt',
+        //   content: `
+        //   # Example 3: Block all but AdsBot crawlers
+        //   User-agent: *
+        //   Disallow: /`
+        // },
+      ],
     ])
 
     return buildSiteTree(pages, site)
 
-    async function buildPageTree({ page, site, isChild = false }) {
+    async function buildPageTree({ page, site }) {
       const { id } = page
       const { html, modules } = await buildStaticPage({
         page,
@@ -207,9 +207,7 @@
           content: module.content,
         })),
         ...(page.pages
-          ? page.pages.map((subpage) =>
-              buildPageTree({ page: subpage, site, isChild: true })
-            )
+          ? page.pages.map((subpage) => buildPageTree({ page: subpage, site }))
           : []),
       ])
     }
