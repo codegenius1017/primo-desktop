@@ -46,10 +46,13 @@
     if (find($sites, ['id', siteID])) {
       $sites = $sites.map((site) => {
         if (site.id !== siteID) return site
-        return updatedSite
+        return {
+          ...site,
+          data: updatedSite,
+        }
       })
       stores.saved.set(true)
-    } else {
+    } else if (find($cloudSites, ['id', siteID])) {
       const success = await actions.cloudSites.save(updatedSite)
       stores.saved.set(success)
       if (!get(stores.saved)) {

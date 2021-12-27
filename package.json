@@ -82,13 +82,10 @@
     "jszip": "^3.7.1",
     "lodash-es": "^4.17.21",
     "mini-svg-data-uri": "^1.4.3",
-    "postcss": "^8.3.11",
-    "postcss-nested": "^5.0.6",
-    "postcss-preset-env": "^6.7.0",
     "postcss-selector-parser": "^6.0.6",
     "prettier": "^2.4.1",
     "promise-worker": "^2.0.1",
-    "update-electron-app": "^2.0.1"
+    "timeago.js": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -109,7 +106,9 @@
     "electron": "^14.0.1",
     "electron-builder": "^22.14.5",
     "electron-packager": "^15.4.0",
-    "postcss-load-config": "^3.1.0",
+    "postcss": "^8.4.5",
+    "postcss-nested": "^5.0.6",
+    "postcss-preset-env": "^7.1.0",
     "prettier-plugin-svelte": "^2.2.0",
     "svelte": "^3.44.0",
     "svelte-check": "^2.0.0",
