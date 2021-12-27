@@ -71,7 +71,6 @@
             )
             .catch((e) => ({ data: null }))
 
-          // TODO: Hook up vercel
           deployment = {
             id: data?.id,
             url: `https://${data.alias[0]}`,
@@ -91,7 +90,7 @@
 
           let data
 
-          if (!activeDeployment) {
+          if (!activeDeployment || activeDeployment.name !== 'netlify') {
             const zipFile = await createSiteZip()
             const res = await axios
               .post('https://api.netlify.com/api/v1/sites', zipFile, {
@@ -134,6 +133,9 @@
               deployment,
               activeDeployment: {
                 ...deployment,
+                url: data.subdomain
+                  ? `https://${data.subdomain}.netlify.app`
+                  : deployment.url,
                 name,
                 siteID: data.id,
               },
@@ -270,8 +272,11 @@
           <div class="box">
             <div class="deployment">
               Published to
-              <a href={deployment.url} rel="external" target="blank"
-                >{deployment.url}</a
+              <a
+                href={activeDeployment ? activeDeployment.url : deployment.url}
+                rel="external"
+                target="blank"
+                >{activeDeployment ? activeDeployment.url : deployment.url}</a
               >
             </div>
           </div>
@@ -289,19 +294,6 @@
           </div>
         </div>
       {/if}
-      <!-- show activeDeployment from addDeploymentToSite-->
-      {#if activeDeployment && deployment}
-        <div class="boxes">
-          <div class="box">
-            <div class="deployment">
-              Active Deployment
-              <a href={activeDeployment.url} rel="external" target="blank"
-                >{activeDeployment.url}</a
-              >
-            </div>
-          </div>
-        </div>
-      {/if}
       <header class="review">
         <div>
           {#if pages.length > 0 && !deployment}
@@ -315,7 +307,6 @@
               {loading}
             />
           {:else if $hosts.length > 0 && !deployment}
-            <p class="title">Publish Changes</p>
             <PrimaryButton
               on:click={publishToHosts}
               label="Save and Publish"

@@ -37,7 +37,6 @@ export async function addDeploymentToSite({
 }) {
   stores.sites.update((s) =>
     s.map((site) => {
-      console.log(site)
       return site.id === siteID
         ? {
             ...site,
