@@ -4,7 +4,7 @@
   import TextField from '$lib/ui/TextField.svelte'
   import PrimaryButton from '$lib/ui/PrimaryButton.svelte'
   import { makeValidUrl } from '$lib/utils'
-  import { createSite } from '@primo-app/primo/src/const'
+  import { Site } from '@primo-app/primo/src/const'
 
   export let onSuccess = (newSite) => {}
   let loading
@@ -28,7 +28,7 @@
           id: siteID,
           name: siteName,
         }
-      : createSite({ id: siteID, name: siteName })
+      : Site({ id: siteID, name: siteName })
 
     onSuccess(siteData)
   }

@@ -7,7 +7,7 @@
   import { get } from 'svelte/store'
   import Primo, {
     modal as primoModal,
-    createNewSite,
+    Site,
     fieldTypes,
     modal,
     stores,
@@ -69,7 +69,7 @@
   onMount(() => (mounted = true))
 
   $: siteID = $page.params.site
-  $: data = $activeSite || createNewSite({ id: 'test', name: 'Test' })
+  $: data = $activeSite || Site({ id: 'test', name: 'Test' })
   $: mounted &&
     setActiveSite(siteID, $cloudSites ? [...$sites, ...$cloudSites] : $sites)
   async function setActiveSite(siteID, sites) {
