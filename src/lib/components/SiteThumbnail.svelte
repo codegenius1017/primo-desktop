@@ -16,6 +16,7 @@
   let iframeLoaded
 
   function resizePreview() {
+    if (!container || !iframe) return
     const { clientWidth: parentWidth } = container
     const { clientWidth: childWidth } = iframe
     scale = parentWidth / childWidth
