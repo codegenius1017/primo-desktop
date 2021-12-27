@@ -95,11 +95,9 @@
                     </g>
                     </svg>
                     `
-
-  // $: getAccountData($user.tokens)
   let enteredToken
 
-  const getSVG = (name) => _find(availableHosts, ['id', name])['svg']
+  const getSVG = (name) => _find(availableHosts, ['id', name])?.svg || ''
 </script>
 
 <div class="boxes">
@@ -135,6 +133,7 @@
             token: enteredToken,
           })
           hostBeingConnected = null
+          showingHosts = false
         }}
         in:fade={{ duration: 200 }}
       >
@@ -174,6 +173,7 @@
             token: enteredToken,
           })
           hostBeingConnected = null
+          showingHosts = false
         }}
         in:fade={{ duration: 200 }}
       >
