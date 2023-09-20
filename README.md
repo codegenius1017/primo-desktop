@@ -14,7 +14,7 @@ All your sites get saved as .json files. You can set the directory they get save
 ### Linking 
 
 Running this repo locally will let you modify the electron wrapper around Primo, but not the editor itself. To do that, you'll need to: 
-1. Clone [primo](https://github.com/primo-af/primo)
+1. Clone 
 1. `cd primo` 
 1. `npm install`
 1. `npm link`
